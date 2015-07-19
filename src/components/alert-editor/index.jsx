@@ -1,31 +1,30 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import PageHeader from 'app/components/page-header';
 import { connect } from 'redux/react';
+import { Navigation } from 'react-router';
+import * as AlertActions from 'app/actions';
 import './style.less';
 
-// EXAMPLE ALERT
-// this.props.alert = {
-//   name: 'Picture a Day',
-//   id: 0,
-//   timeWindow: {
-//     start: '08:00',
-//     end: '21:30'
-//   },
-//   isEnabled: false
-// }
-
 @connect(function(state, component) {
-  console.log('editor this', this, arguments);
-  return {alert: state.alerts[Number(component.params.alertId)]};
+  let targetId = Number(component.params.alertId);
+  return { alert: state.alerts.filter(alert => alert.id === targetId)[0] };
 })
 export default class AlertEditor extends Component {
 
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
+
   constructor(props, context) {
     super(props, context);
+
+    this.state = {
+      newName: props.alert.name
+    };
   }
 
   render() {
-    console.info('alert editor', this);
+    console.info('alert editor', this.props.alert);
 
     let alert = this.props.alert;
 
@@ -38,26 +37,44 @@ export default class AlertEditor extends Component {
 
     return (
       <div>
-        <PageHeader pageTitle={alert.name} />
+        <input
+          type='text'
+          value={this.state.newName}
+          onChange={this.onNameChange.bind(this)} />
         <button onClick={this.toggleEnabled.bind(this, alert)}>{buttonLabel}</button>
         <label>
           Start Window
-          <input type="time" name="start_time_window" value={startTime} />
+          <input type='time' name='start_time_window' value={startTime} />
         </label>
         <label>
           End Window
-          <input type="time" name="end_time_window" value={endTime} />
+          <input type='time' name='end_time_window' value={endTime} />
         </label>
+        <button onClick={this.onDeleteClick.bind(this)}>Delete</button>
       </div>
     );
 
   }
 
   toggleEnabled(alert) {
-    console.info('toggling', alert);
-    AlertStore.set(alert.id, {
-      isEnabled: !alert.isEnabled
+    // console.info('toggling', alert);
+    // AlertStore.set(alert.id, {
+    //   isEnabled: !alert.isEnabled
+    // });
+  }
+
+  onNameChange(e) {
+    console.info('changing name', e.target.value);
+    this.setState({
+      newName: e.target.value
     });
+    this.props.dispatch(AlertActions.name_alert(this.props.alert.id, e.target.value));
+  }
+
+  onDeleteClick(e) {
+    console.info('NAVIGATION', this);
+    this.context.router.transitionTo('/alerts');
+    this.props.dispatch(AlertActions.delete_alert(this.props.alert.id));
   }
 
 };

@@ -1,8 +1,9 @@
-import * as actions from 'app/constants/actionTypes';
+import * as ACTIONS from 'app/constants/actionTypes';
 
-const initialState = [{
+let idIterator = 0;
+const INIT_STATE = [{
   name: 'Picture a Day',
-  id: 0,
+  id: idIterator++,
   timeWindow: {
     start: '08:00',
     end: '21:30'
@@ -10,7 +11,7 @@ const initialState = [{
   isEnabled: false
 }, {
   name: '1 Second Every Day',
-  id: 1,
+  id: idIterator++,
   timeWindow: {
     start: '12:30',
     end: '19:00'
@@ -18,7 +19,7 @@ const initialState = [{
   isEnabled: true
 }, {
   name: 'Call Mom',
-  id: 2,
+  id: idIterator++,
   timeWindow: {
     start: '09:00',
     end: '20:00'
@@ -26,9 +27,41 @@ const initialState = [{
   isEnabled: true
 }];
 
-export default function alerts(state = initialState, action) {
+let HANDLERS = {};
+HANDLERS[ACTIONS.ADD_ALERT] = function(STATE, ACTION) {
+  return [
+    ...STATE,
+    {
+      name: 'New Alert',
+      id: idIterator++,
+      timeWindow: {
+        start: '09:00',
+        end: '21:00'
+      },
+      isEnabled: true
+    }
+  ];
+};
+HANDLERS[ACTIONS.DELETE_ALERT] = function(STATE, ACTION) {
+  return STATE.filter(alert => alert.id !== ACTION.id);
+}
+HANDLERS[ACTIONS.NAME_ALERT] = function(STATE, ACTION) {
+  return STATE.map(function(alert) {
+    console.log('mapping name', alert.id, ACTION.id, ACTION.name);
+    if (alert.id !== ACTION.id) return alert;
+    alert.name = ACTION.name;
+    return alert;
+  });
+}
 
-  console.log('reduce state', state, action);
+export default function alerts(STATE = INIT_STATE, ACTION) {
 
-  return state;
+  console.info('reduce state', STATE, ACTION);
+
+  if (ACTION && HANDLERS.hasOwnProperty(ACTION.type)) {
+    return HANDLERS[ACTION.type](STATE, ACTION);
+  } else {
+    return STATE;
+  }
+
 };
