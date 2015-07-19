@@ -6,7 +6,7 @@ export default class AppHeader extends Component {
 
     return (
       <header>
-        <h1>Random Timers</h1>
+        <h1>Random Alerts</h1>
       </header>
     );
 

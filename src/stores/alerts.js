@@ -1,4 +1,6 @@
-let timers = [{
+import * as actions from 'app/constants/actionTypes';
+
+const initialState = [{
   name: 'Picture a Day',
   id: 0,
   timeWindow: {
@@ -24,20 +26,9 @@ let timers = [{
   isEnabled: true
 }];
 
-export default {
+export default function alerts(state = initialState, action) {
 
-  get(id) {
-    if (id === undefined) {
-      return timers;
-    } else {
-      id = Number(id);
-      return timers.filter(timer => timer.id === id)[0];
-    }
-  },
+  console.log('reduce state', state, action);
 
-  set(id, newState) {
-    let timer = this.get(id);
-    console.log('setting timer', timer);
-  }
-
+  return state;
 };

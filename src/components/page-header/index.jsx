@@ -7,7 +7,7 @@ export default class PageHeader extends Component {
 
     let backButton = null;
 
-    if (this.props.pageTitle !== 'List of Timers') {
+    if (this.props.pageTitle !== 'List of Alerts') {
       backButton = (
         <button onClick={this.goBack.bind(this)}>Back</button>
       );
