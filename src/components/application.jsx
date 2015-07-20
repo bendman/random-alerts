@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import { PropTypes, Component } from 'react';
 
 export default class Application extends Component {
 
@@ -16,7 +16,7 @@ export default class Application extends Component {
         <h1>application.jsx</h1>
         {this.props.children}
       </div>
-    )
+    );
   }
 
-};
+}

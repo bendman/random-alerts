@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import { PropTypes, Component } from 'react';
 import { Router, Route, Redirect } from 'react-router';
 
 import { Provider } from 'redux/react';
@@ -10,6 +10,18 @@ import AlertList from 'app/components/alert-list';
 import AlertEditor from 'app/components/alert-editor';
 
 const redux = createRedux(stores);
+
+function renderRoutes(history) {
+  return (
+    <Router history={history}>
+      <Route component={Application}>
+        <Route path='alerts' component={AlertList} />
+        <Route name='editor' path='alerts/:alertId' component={AlertEditor} />
+        <Redirect from='/' to='alerts' />
+      </Route>
+    </Router>
+  );
+}
 
 export default class Root extends Component {
 
@@ -27,16 +39,4 @@ export default class Root extends Component {
     );
   }
 
-}
-
-function renderRoutes(history) {
-  return (
-    <Router history={history}>
-      <Route component={Application}>
-        <Route path='alerts' component={AlertList} />
-        <Route name='editor' path='alerts/:alertId' component={AlertEditor} />
-        <Redirect from='/' to='alerts' />
-      </Route>
-    </Router>
-  );
 }

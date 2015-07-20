@@ -1,8 +1,6 @@
-import React, { PropTypes, Component } from 'react';
+import { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
-// import PageHeader from 'app/components/page-header';
 import { connect } from 'redux/react';
-import { bindActionCreators } from 'redux';
 import * as AlertActions from 'app/actions';
 
 @connect(function(state) {
@@ -41,7 +39,7 @@ export default class AlertList extends Component {
     );
   }
 
-  onNewClick(e) {
+  onNewClick() {
     console.log('dispatched', this.props.dispatch(AlertActions.add_alert()));
     console.log('this.props.alerts', this.props.alerts);
     // TODO this should redirect to the newest alert

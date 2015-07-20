@@ -28,7 +28,7 @@ const INIT_STATE = [{
 }];
 
 let HANDLERS = {};
-HANDLERS[ACTIONS.ADD_ALERT] = function(STATE, ACTION) {
+HANDLERS[ACTIONS.ADD_ALERT] = function(STATE) {
   return [
     ...STATE,
     {
@@ -44,15 +44,17 @@ HANDLERS[ACTIONS.ADD_ALERT] = function(STATE, ACTION) {
 };
 HANDLERS[ACTIONS.DELETE_ALERT] = function(STATE, ACTION) {
   return STATE.filter(alert => alert.id !== ACTION.id);
-}
+};
 HANDLERS[ACTIONS.NAME_ALERT] = function(STATE, ACTION) {
   return STATE.map(function(alert) {
     console.log('mapping name', alert.id, ACTION.id, ACTION.name);
-    if (alert.id !== ACTION.id) return alert;
+    if (alert.id !== ACTION.id) {
+      return alert;
+    }
     alert.name = ACTION.name;
     return alert;
   });
-}
+};
 
 export default function alerts(STATE = INIT_STATE, ACTION) {
 
@@ -64,4 +66,4 @@ export default function alerts(STATE = INIT_STATE, ACTION) {
     return STATE;
   }
 
-};
+}

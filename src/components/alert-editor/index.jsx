@@ -1,7 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import PageHeader from 'app/components/page-header';
+import { Component, PropTypes } from 'react';
 import { connect } from 'redux/react';
-import { Navigation } from 'react-router';
 import * as AlertActions from 'app/actions';
 import './style.less';
 
@@ -56,7 +54,7 @@ export default class AlertEditor extends Component {
 
   }
 
-  toggleEnabled(alert) {
+  toggleEnabled() {
     // console.info('toggling', alert);
     // AlertStore.set(alert.id, {
     //   isEnabled: !alert.isEnabled
@@ -71,10 +69,10 @@ export default class AlertEditor extends Component {
     this.props.dispatch(AlertActions.name_alert(this.props.alert.id, e.target.value));
   }
 
-  onDeleteClick(e) {
+  onDeleteClick() {
     console.info('NAVIGATION', this);
     this.context.router.transitionTo('/alerts');
     this.props.dispatch(AlertActions.delete_alert(this.props.alert.id));
   }
 
-};
+}
