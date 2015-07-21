@@ -1,4 +1,4 @@
-import { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'redux/react';
 import * as AlertActions from 'app/actions';
 import './style.less';
@@ -41,11 +41,11 @@ export default class AlertEditor extends Component {
           onChange={this.onNameChange.bind(this)} />
         <button onClick={this.toggleEnabled.bind(this, alert)}>{buttonLabel}</button>
         <label>
-          Start Window
+          Start
           <input type='time' name='start_time_window' value={startTime} />
         </label>
         <label>
-          End Window
+          End
           <input type='time' name='end_time_window' value={endTime} />
         </label>
         <button onClick={this.onDeleteClick.bind(this)}>Delete</button>
