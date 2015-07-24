@@ -47,11 +47,28 @@ HANDLERS[ACTIONS.DELETE_ALERT] = function(STATE, ACTION) {
 };
 HANDLERS[ACTIONS.NAME_ALERT] = function(STATE, ACTION) {
   return STATE.map(function(alert) {
-    console.log('mapping name', alert.id, ACTION.id, ACTION.name);
     if (alert.id !== ACTION.id) {
       return alert;
     }
     alert.name = ACTION.name;
+    return alert;
+  });
+};
+HANDLERS[ACTIONS.ENABLE_ALERT] = function(STATE, ACTION) {
+  return STATE.map(function(alert) {
+    if (alert.id !== ACTION.id) {
+      return alert;
+    }
+    alert.isEnabled = true;
+    return alert;
+  });
+};
+HANDLERS[ACTIONS.DISABLE_ALERT] = function(STATE, ACTION) {
+  return STATE.map(function(alert) {
+    if (alert.id !== ACTION.id) {
+      return alert;
+    }
+    alert.isEnabled = false;
     return alert;
   });
 };

@@ -55,14 +55,17 @@ export default class AlertEditor extends Component {
   }
 
   toggleEnabled() {
-    // console.info('toggling', alert);
-    // AlertStore.set(alert.id, {
-    //   isEnabled: !alert.isEnabled
-    // });
+    let action;
+    if (this.props.alert.isEnabled) {
+      action = AlertActions.disable_alert;
+    } else {
+      action = AlertActions.enable_alert;
+    }
+
+    this.props.dispatch(action(this.props.alert.id));
   }
 
   onNameChange(e) {
-    console.info('changing name', e.target.value);
     this.setState({
       newName: e.target.value
     });
@@ -70,7 +73,6 @@ export default class AlertEditor extends Component {
   }
 
   onDeleteClick() {
-    console.info('NAVIGATION', this);
     this.context.router.transitionTo('/alerts');
     this.props.dispatch(AlertActions.delete_alert(this.props.alert.id));
   }
