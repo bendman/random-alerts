@@ -5,7 +5,10 @@ import './style.less';
 
 @connect(function(state, component) {
   let targetId = Number(component.params.alertId);
-  return { alert: state.alerts.filter(alert => alert.id === targetId)[0] };
+  let foundAlerts = state.alerts.filter(alert => alert.get('id') === targetId);
+  return {
+    alert: foundAlerts.get(0)
+  };
 })
 export default class AlertEditor extends Component {
 
@@ -15,16 +18,12 @@ export default class AlertEditor extends Component {
 
   constructor(props, context) {
     super(props, context);
-
-    this.state = {
-      newName: props.alert.name
-    };
   }
 
   render() {
     console.info('alert editor', this.props.alert);
 
-    let alert = this.props.alert;
+    let alert = this.props.alert.toJS();
 
     let buttonLabel = alert.isEnabled
       ? 'Disable'
@@ -37,7 +36,7 @@ export default class AlertEditor extends Component {
       <div>
         <input
           type='text'
-          value={this.state.newName}
+          value={alert.name}
           onChange={this.onNameChange.bind(this)} />
         <button onClick={this.toggleEnabled.bind(this, alert)}>{buttonLabel}</button>
         <label>
@@ -66,10 +65,7 @@ export default class AlertEditor extends Component {
   }
 
   onNameChange(e) {
-    this.setState({
-      newName: e.target.value
-    });
-    this.props.dispatch(AlertActions.name_alert(this.props.alert.id, e.target.value));
+    this.props.dispatch(AlertActions.name_alert(this.props.alert.get('id'), e.target.value));
   }
 
   onDeleteClick() {
