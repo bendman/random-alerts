@@ -5,9 +5,8 @@ import './style.less';
 
 @connect(function(state, component) {
   let targetId = Number(component.params.alertId);
-  let foundAlerts = state.alerts.filter(alert => alert.get('id') === targetId);
   return {
-    alert: foundAlerts.get(0)
+    alert: state.alerts.toJS().filter(alert => alert.id === targetId)[0]
   };
 })
 export default class AlertEditor extends Component {
@@ -21,16 +20,19 @@ export default class AlertEditor extends Component {
   }
 
   render() {
-    console.info('alert editor', this.props.alert);
-
-    let alert = this.props.alert.toJS();
-
-    let buttonLabel = alert.isEnabled
-      ? 'Disable'
-      : 'Enable';
+    let alert = this.props.alert;
 
     let startTime = alert.timeWindow.start;
     let endTime = alert.timeWindow.end;
+
+    let toggleText, toggleHandler;
+    if (alert.isEnabled) {
+      toggleText = 'Disable';
+      toggleHandler = this.onDisable;
+    } else {
+      toggleText = 'Enable';
+      toggleHandler = this.onEnable;
+    }
 
     return (
       <div>
@@ -38,7 +40,9 @@ export default class AlertEditor extends Component {
           type='text'
           value={alert.name}
           onChange={this.onNameChange.bind(this)} />
-        <button onClick={this.toggleEnabled.bind(this, alert)}>{buttonLabel}</button>
+          <button onClick={toggleHandler.bind(this, alert)}>
+            {toggleText}
+          </button>
         <label>
           Start
           <input type='time' name='start_time_window' value={startTime} />
@@ -53,19 +57,16 @@ export default class AlertEditor extends Component {
 
   }
 
-  toggleEnabled() {
-    let action;
-    if (this.props.alert.isEnabled) {
-      action = AlertActions.disable_alert;
-    } else {
-      action = AlertActions.enable_alert;
-    }
+  onDisable() {
+    this.props.dispatch(AlertActions.disable_alert(this.props.alert.id));
+  }
 
-    this.props.dispatch(action(this.props.alert.id));
+  onEnable() {
+    this.props.dispatch(AlertActions.enable_alert(this.props.alert.id));
   }
 
   onNameChange(e) {
-    this.props.dispatch(AlertActions.name_alert(this.props.alert.get('id'), e.target.value));
+    this.props.dispatch(AlertActions.name_alert(this.props.alert.id, e.target.value));
   }
 
   onDeleteClick() {

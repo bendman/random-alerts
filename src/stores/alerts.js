@@ -41,41 +41,29 @@ HANDLERS[ACTIONS.ADD_ALERT] = function(STATE) {
     });
 };
 HANDLERS[ACTIONS.DELETE_ALERT] = function(STATE, ACTION) {
-  return STATE.filter(alert => alert.id !== ACTION.id);
+  return STATE.filter(alert => alert.get('id') !== ACTION.id);
 };
 HANDLERS[ACTIONS.NAME_ALERT] = function(STATE, ACTION) {
-  var newState = STATE.toJS().map(function(alert) {
-    if (alert.id !== ACTION.id) {
-      return alert;
+  return STATE.map(function(alert) {
+    if (alert.get('id') === ACTION.id) {
+      alert = alert.set('name', ACTION.name);
     }
-    alert.name = ACTION.name;
     return alert;
   });
-  console.log('new state', newState);
-  return Immutable.fromJS(newState);
-  // return Immutable.fromJS(STATE.map(function(alert) {
-  //   if (alert.get('id') !== ACTION.id) {
-  //     return alert;
-  //   }
-  //   alert.name = ACTION.name;
-  //   return alert;
-  // });
 };
 HANDLERS[ACTIONS.ENABLE_ALERT] = function(STATE, ACTION) {
   return STATE.map(function(alert) {
-    if (alert.id !== ACTION.id) {
-      return alert;
+    if (alert.get('id') === ACTION.id) {
+      alert = alert.set('isEnabled', true);
     }
-    alert.isEnabled = true;
     return alert;
   });
 };
 HANDLERS[ACTIONS.DISABLE_ALERT] = function(STATE, ACTION) {
   return STATE.map(function(alert) {
-    if (alert.id !== ACTION.id) {
-      return alert;
+    if (alert.get('id') === ACTION.id) {
+      alert = alert.set('isEnabled', false);
     }
-    alert.isEnabled = false;
     return alert;
   });
 };

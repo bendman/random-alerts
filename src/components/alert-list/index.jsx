@@ -4,7 +4,7 @@ import { connect } from 'redux/react';
 import * as AlertActions from 'app/actions';
 
 @connect(function(state) {
-  return { alerts: state.alerts };
+  return { alerts: state.alerts.toJS() };
 })
 export default class AlertList extends Component {
 
