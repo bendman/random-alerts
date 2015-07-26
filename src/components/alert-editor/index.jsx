@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'redux/react';
-import * as AlertActions from 'app/actions';
+import * as Actions from 'app/actions';
+import AppHeader from 'app/components/app-header';
 import './style.less';
 
 @connect(function(state, component) {
@@ -36,21 +37,43 @@ export default class AlertEditor extends Component {
 
     return (
       <div>
-        <input
-          type='text'
-          value={alert.name}
-          onChange={this.onNameChange.bind(this)} />
-          <button onClick={toggleHandler.bind(this, alert)}>
-            {toggleText}
-          </button>
+
+        <AppHeader>
+          <button onClick={this.onBackClick.bind(this)}
+            className='back-btn'> &lt; </button>
+          <h2>Edit</h2>
+        </AppHeader>
+
         <label>
-          Start
-          <input type='time' name='start_time_window' value={startTime} />
+          <span class='input-title'>Message</span>
+          <input
+            type='text'
+            value={alert.name}
+            onChange={this.onNameChange.bind(this)} />
         </label>
+
         <label>
-          End
-          <input type='time' name='end_time_window' value={endTime} />
+          <span class='input-title'>Start</span>
+          <input
+            type='time'
+            name='start_time_window'
+            value={startTime}
+            onChange={this.onStartChange.bind(this)}
+          />
         </label>
+
+        <label>
+          <span class='input-title'>End</span>
+          <input
+            type='time'
+            name='end_time_window'
+            value={endTime}
+            onChange={this.onEndChange.bind(this)}
+          />
+        </label>
+        <button onClick={toggleHandler.bind(this, alert)}>
+          {toggleText}
+        </button>
         <button onClick={this.onDeleteClick.bind(this)}>Delete</button>
       </div>
     );
@@ -58,20 +81,34 @@ export default class AlertEditor extends Component {
   }
 
   onDisable() {
-    this.props.dispatch(AlertActions.disable_alert(this.props.alert.id));
+    this.props.dispatch(Actions.disable_alert(this.props.alert.id));
   }
 
   onEnable() {
-    this.props.dispatch(AlertActions.enable_alert(this.props.alert.id));
+    this.props.dispatch(Actions.enable_alert(this.props.alert.id));
   }
 
   onNameChange(e) {
-    this.props.dispatch(AlertActions.name_alert(this.props.alert.id, e.target.value));
+    this.props.dispatch(Actions.name_alert(this.props.alert.id, e.target.value));
   }
 
   onDeleteClick() {
     this.context.router.transitionTo('/alerts');
-    this.props.dispatch(AlertActions.delete_alert(this.props.alert.id));
+    this.props.dispatch(Actions.delete_alert(this.props.alert.id));
+  }
+
+  onStartChange(e) {
+    let time = e.target.value;
+    this.props.dispatch(Actions.set_alert_start(this.props.alert.id, time));
+  }
+
+  onEndChange(e) {
+    let time = e.target.value;
+    this.props.dispatch(Actions.set_alert_end(this.props.alert.id, time));
+  }
+
+  onBackClick() {
+    this.context.router.transitionTo('/alerts');
   }
 
 }

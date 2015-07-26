@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
+import './style.less';
 
 export default class AppHeader extends Component {
 
   render() {
 
     return (
-      <header>
-        <h1>Random Alerts</h1>
+      <header className='context-nav'>
+        {this.props.children}
       </header>
     );
 
   }
 
-};
+}

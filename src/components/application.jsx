@@ -1,4 +1,6 @@
 import React, { PropTypes, Component } from 'react';
+import 'purecss';
+import 'app/style.less';
 
 export default class Application extends Component {
 
@@ -13,7 +15,6 @@ export default class Application extends Component {
   render() {
     return (
       <div>
-        <h1>application.jsx</h1>
         {this.props.children}
       </div>
     );

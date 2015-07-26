@@ -4,7 +4,7 @@ import * as ACTIONS from 'app/constants/actionTypes';
 let idIterator = 0;
 const INIT_STATE = Immutable.fromJS([{
   name: 'Picture a Day',
-  id: idIterator++,
+  id: ++idIterator,
   timeWindow: {
     start: '08:00',
     end: '21:30'
@@ -12,7 +12,7 @@ const INIT_STATE = Immutable.fromJS([{
   isEnabled: false
 }, {
   name: '1 Second Every Day',
-  id: idIterator++,
+  id: ++idIterator,
   timeWindow: {
     start: '12:30',
     end: '19:00'
@@ -20,7 +20,7 @@ const INIT_STATE = Immutable.fromJS([{
   isEnabled: true
 }, {
   name: 'Call Mom',
-  id: idIterator++,
+  id: ++idIterator,
   timeWindow: {
     start: '09:00',
     end: '20:00'
@@ -30,15 +30,15 @@ const INIT_STATE = Immutable.fromJS([{
 
 let HANDLERS = {};
 HANDLERS[ACTIONS.ADD_ALERT] = function(STATE) {
-  return STATE.push({
+  return STATE.push(Immutable.fromJS({
       name: 'New Alert',
-      id: idIterator++,
+      id: ++idIterator,
       timeWindow: {
         start: '09:00',
         end: '21:00'
       },
       isEnabled: true
-    });
+    }));
 };
 HANDLERS[ACTIONS.DELETE_ALERT] = function(STATE, ACTION) {
   return STATE.filter(alert => alert.get('id') !== ACTION.id);
@@ -67,15 +67,37 @@ HANDLERS[ACTIONS.DISABLE_ALERT] = function(STATE, ACTION) {
     return alert;
   });
 };
+HANDLERS[ACTIONS.SET_ALERT_START] = function(STATE, ACTION) {
+  return STATE.map(function(alert) {
+    if (alert.get('id') === ACTION.id) {
+      alert = alert.setIn(
+        [ 'timeWindow', 'start' ],
+        ACTION.start
+      );
+    }
+    return alert;
+  });
+};
+HANDLERS[ACTIONS.SET_ALERT_END] = function(STATE, ACTION) {
+  return STATE.map(function(alert) {
+    if (alert.get('id') === ACTION.id) {
+      alert = alert.setIn(
+        [ 'timeWindow', 'end' ],
+        ACTION.end
+      );
+    }
+    return alert;
+  });
+};
 
 export default function alerts(STATE = INIT_STATE, ACTION) {
-
-  console.info('reduce state', STATE, ACTION);
-
   if (ACTION && HANDLERS.hasOwnProperty(ACTION.type)) {
     return HANDLERS[ACTION.type](STATE, ACTION);
   } else {
     return STATE;
   }
+}
 
+export function getNewId() {
+  return idIterator;
 }
