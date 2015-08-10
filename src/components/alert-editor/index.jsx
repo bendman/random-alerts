@@ -45,7 +45,7 @@ export default class AlertEditor extends Component {
         </AppHeader>
 
         <label>
-          <span class='input-title'>Message</span>
+          <span className='input-title'>Message</span>
           <input
             type='text'
             value={alert.name}
@@ -53,7 +53,7 @@ export default class AlertEditor extends Component {
         </label>
 
         <label>
-          <span class='input-title'>Start</span>
+          <span className='input-title'>Start</span>
           <input
             type='time'
             name='start_time_window'
@@ -63,7 +63,7 @@ export default class AlertEditor extends Component {
         </label>
 
         <label>
-          <span class='input-title'>End</span>
+          <span className='input-title'>End</span>
           <input
             type='time'
             name='end_time_window'
@@ -71,10 +71,10 @@ export default class AlertEditor extends Component {
             onChange={this.onEndChange.bind(this)}
           />
         </label>
-        <button onClick={toggleHandler.bind(this, alert)}>
+        <button className='pure-button button-positive' onClick={toggleHandler.bind(this, alert)}>
           {toggleText}
         </button>
-        <button onClick={this.onDeleteClick.bind(this)}>Delete</button>
+        <button className='pure-button button-negative' onClick={this.onDeleteClick.bind(this)}>Delete</button>
       </div>
     );
 

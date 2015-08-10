@@ -1,16 +1,31 @@
 @import (reference) '~app/style.less';
 
+@inputBG: #dfdfdf;
+@inputSize: 2rem;
 
 label {
   display: block;
-  padding: 0.5rem;
+  padding: 0 0.5rem;
+  background: @inputBG;
+  margin: 1rem 0.5rem;
+  height: @inputSize;
+  line-height: @inputSize;
+  color: average(@text, @inputBG);
+
+  .input-title {
+    display: inline-block;
+    width: 5rem;
+  }
 
   input[type=text],
   input[type=time] {
     display: inline-block;
+    height: @inputSize;
+    line-height: inherit;
     margin: 0 auto;
-    background: lighten(@back, 5%);;
+    background: transparent;
     border: none;
+    color: @text;
   }
 }
 button {
@@ -18,4 +33,11 @@ button {
   border: none;
   display: block;
   margin: auto;
+
+  &.button-positive {
+    background: lightgreen;
+  }
+  &.button-negative {
+    background: red;
+  }
 }
