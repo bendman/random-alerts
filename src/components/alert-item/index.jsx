@@ -22,13 +22,14 @@ export default class AlertEditor extends Component {
   render() {
     let alert = this.props.alert;
 
-    let toggleHandler, toggleClass;
+    let toggleClass;
+    // let toggleHandler;
     if (alert.isEnabled) {
       toggleClass = 'enabled';
-      toggleHandler = this.onDisable;
+      // toggleHandler = this.onDisable;
     } else {
       toggleClass = 'disabled';
-      toggleHandler = this.onEnable;
+      // toggleHandler = this.onEnable;
     }
 
     return (
