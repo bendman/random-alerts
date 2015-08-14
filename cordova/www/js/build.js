@@ -27160,6 +27160,7 @@
 	        id: alert.id,
 	        title: alert.name,
 	        text: '',
+	        led: 'ED52B9',
 	        firedThisCycle: firedThisCycle,
 	        range: {
 	          start: alert.timeWindow.start,
