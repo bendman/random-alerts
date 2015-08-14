@@ -17,5 +17,8 @@
     "quotes": [1, "single"],
     "camelcase": 0,
     "react/jsx-uses-react": 1
+  },
+  "globals": {
+    "cordova": true
   }
 }

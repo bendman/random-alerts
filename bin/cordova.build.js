@@ -10,7 +10,7 @@ var CORDOVA_DIR = path.resolve(__dirname, '../cordova');
 // Setup the config
 var webpackConfig = require('../webpack.config.js');
 // Remove hot loading things
-webpackConfig.entry = path.resolve(__dirname, '../src/cordova.index.jsx');
+webpackConfig.entry = path.resolve(__dirname, '../src/index.cordova.jsx');
 webpackConfig.plugins = [];
 
 // Run a web build

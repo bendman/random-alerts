@@ -1,6 +1,7 @@
 import React from 'react';
 import History from 'react-router/lib/HashHistory';
 import Root from './root';
+import AlertController from 'app/controllers/alerts';
 
 const history = new History();
 
@@ -22,9 +23,10 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+        AlertController.handleEvents();
     },
     // Update DOM on a Received Event
-    receivedEvent: function(id) {
+    receivedEvent: function(/*id*/) {
         // var parentElement = document.getElementById(id);
         // var listeningElement = parentElement.querySelector('.listening');
         // var receivedElement = parentElement.querySelector('.received');

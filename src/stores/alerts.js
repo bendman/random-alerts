@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import * as ACTIONS from 'app/constants/actionTypes';
+import AlertController from 'app/controllers/alerts';
 
 let idIterator = 0;
 const INIT_STATE = Immutable.fromJS([{
@@ -90,14 +91,18 @@ HANDLERS[ACTIONS.SET_ALERT_END] = function(STATE, ACTION) {
   });
 };
 
-export default function alerts(STATE = INIT_STATE, ACTION) {
-  if (ACTION && HANDLERS.hasOwnProperty(ACTION.type)) {
-    return HANDLERS[ACTION.type](STATE, ACTION);
-  } else {
-    return STATE;
-  }
-}
-
 export function getNewId() {
   return idIterator;
+}
+
+export default function alerts(STATE = INIT_STATE, ACTION) {
+  let newState = STATE;
+
+  if (ACTION && HANDLERS.hasOwnProperty(ACTION.type)) {
+    newState = HANDLERS[ACTION.type](STATE, ACTION);
+  }
+
+  AlertController.updateAll(newState.toJS());
+
+  return newState;
 }

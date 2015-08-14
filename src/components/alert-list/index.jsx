@@ -42,4 +42,18 @@ export default class AlertList extends Component {
     this.context.router.transitionTo(`/alerts/${getNewId()}`);
   }
 
+/*  showDelayedAlert() {
+    // let triggerDate = moment().add(2, 'seconds');
+
+    AlertsController.set({
+      id: 0,
+      title: 'Title 0',
+      text: 'text 0',
+      range: {
+        start: '08:00',
+        end: '21:30'
+      }
+    });
+  }*/
+
 }
