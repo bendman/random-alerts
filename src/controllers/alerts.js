@@ -29,7 +29,7 @@ var Controller = {
 
     // Ensure the range start is after NOW
     if (start.isBefore(NOW)) {
-      start = moment(NOW);
+      start = moment(NOW).clone();
     }
 
     // Get the range in milliseconds for randomization
@@ -52,7 +52,8 @@ var Controller = {
     cordova.plugins.notification.local.schedule({
       id: options.id,
       title: options.title,
-      text: options.text,
+      text: `Random Alert @ ${targetTime.format('HH:mm')}`,
+      led: 'ED52B9',
       at: targetTime.clone().toDate()
     });
 
@@ -90,8 +91,6 @@ var Controller = {
       this.set({
         id: alert.id,
         title: alert.name,
-        text: '',
-        led: 'ED52B9',
         firedThisCycle: firedThisCycle,
         range: {
           start: alert.timeWindow.start,

@@ -13,25 +13,31 @@ var webpackConfig = require('../webpack.config.js');
 webpackConfig.entry = path.resolve(__dirname, '../src/index.cordova.jsx');
 webpackConfig.plugins = [];
 
+function copyFileAsync(src, dest) {
+  console.log('copying: \n\tfrom ' + src + '\n\tto   ' + dest);
+  return fs.readFileAsync(path.resolve(src))
+    .then(function(content) {
+      return fs.writeFileAsync(path.resolve(dest), content);
+    });
+}
+
 // Run a web build
 console.log('\nBUILDING WEB PROJECT\n');
 buildAsync(null)
 
-  // Read built entry file
-  .then(function(stats) {
-    console.log('\nREADING CONTENT OF BUILT WEB PROJECT\n');
-    var mainFile = path.resolve(
-      webpackConfig.output.path,
-      webpackConfig.output.filename
+  // Copy built files into cordova project
+  .then(function() {
+    console.log('\nCOPYING CONTENT OF BUILT WEB PROJECT\n');
+    var mainSource = path.join(
+      webpackConfig.output.path, webpackConfig.output.filename
     );
-    return fs.readFileAsync(mainFile);
-  })
-
-  // Copy file to cordova
-  .then(function(entryContent) {
-    console.log('\nCOPYING MAIN ENTRY FILE TO CORDOVA PROJECT\n');
-    var targetFile = path.resolve(CORDOVA_DIR, 'www/js/build.js');
-    return fs.writeFileAsync(targetFile, entryContent);
+    var mainTarget = path.join(
+      CORDOVA_DIR, 'www/js/', webpackConfig.output.filename
+    );
+    return Promise.all([
+      copyFileAsync(mainSource, mainTarget),
+      copyFileAsync(mainSource + '.map', mainTarget + '.map')
+    ]);
   })
 
   // Run cordova build
