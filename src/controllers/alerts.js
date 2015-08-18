@@ -1,114 +1,74 @@
 import moment from 'moment';
+import Immutable from 'immutable';
+import Notifications from './notifications';
 
-let isReady = false;
-let firedAlerts = {
+const TIME_FORMAT = 'HH:mm';
 
-};
-
-function getRangeSpread(start, end) {
+// Return a moment between a start and end time
+function getRandomMoment(start, end) {
   let rangeStart = moment(start, 'HH:mm');
   let rangeEnd = moment(end, 'HH:mm');
-  return rangeEnd.diff(rangeStart);
+
+  // Create a randomized offset for a time between start and end
+  let offset = parseInt(Math.random() * rangeEnd.diff(start, 'seconds'), 10);
+  let target = rangeStart.clone().add(offset, 'seconds');
+
+  console.info('target time', target.format('HH:mm:ss'));
+  return target;
 }
 
-var Controller = {
+let Controller = {
 
-  set(options) {
-    // Use now for a comparison
-    const NOW = moment();
+  fetch() {
+    let fetched = localStorage.getItem('alerts');
+    return fetched ? JSON.parse(fetched) : null;
+  },
 
-    let start = moment(options.range.start, 'HH:mm');
-    let end = moment(options.range.end, 'HH:mm');
-
-    // Handle times for later dates
-    // TODO handling for overnight ranges
-    if (options.firedThisCycle) {
-      start.add(1, 'day');
-      end.add(1, 'day');
+  save(store) {
+    if (store instanceof Immutable.List) {
+      store = store.toJS();
     }
-
-    // Ensure the range start is after NOW
-    if (start.isBefore(NOW)) {
-      start = moment(NOW).clone();
-    }
-
-    // Get the range in milliseconds for randomization
-    let rangeSpread = getRangeSpread(start, end);
-
-    // Get a random target time from the range
-    let targetTime = moment()
-      .add(parseInt(Math.random() * rangeSpread, 10), 'milliseconds');
-
-    let wait = 0;
-
-    wait = targetTime.diff(NOW);
-
-    options.text += ' ' + moment.duration(wait).asSeconds();
-
-    if (!isReady) {
-      return;
-    }
-
-    cordova.plugins.notification.local.schedule({
-      id: options.id,
-      title: options.title,
-      text: `Random Alert @ ${targetTime.format('HH:mm')}`,
-      led: 'ED52B9',
-      at: targetTime.clone().toDate()
-    });
-
-    // window.setTimeout(function() {
-    //
-    //   window.alert(`${options.title}\n\n${options.text}`);
-    // }, wait);
+    let storable = JSON.stringify(store);
+    localStorage.setItem('alerts', storable);
   },
 
   remove(id) {
-    if (isReady) {
-      cordova.plugins.notification.local.cancel(id);
-    }
+    Notifications.remove(id);
   },
 
   // Update all of the arrays to match the current state
   updateAll(alerts) {
-    alerts.forEach(this.update.bind(this));
+    let updatedAlerts = alerts.map(this.update.bind(this));
+    console.info('updatedAlerts', updatedAlerts);
+    return updatedAlerts;
   },
 
   // Update a single alert to match it's current state
   update(alert) {
+    let earliest = moment(alert.timeWindow.start, TIME_FORMAT);
+    let latest = moment(alert.timeWindow.end, TIME_FORMAT);
+
+    // For overnight end times, add a day
+    if (latest.isBefore(earliest)) {
+      latest.add(1, 'day');
+    }
+
     if (!alert.isEnabled) {
       this.remove(alert.id);
-    } else {
-      let lastFire = firedAlerts[alert.id];
-      // Use this to determine if it has already fired this cycle
-      let firedThisCycle = false;
-      // if alert.lastFire is after the current possible range of time,
-      // firedThisCycle => true;
-      firedThisCycle = lastFire && moment(lastFire).isAfter(alert.timeWindow.start);
-      //
-      // TODO handling for overnight ranges
 
-      this.set({
-        id: alert.id,
-        title: alert.name,
-        firedThisCycle: firedThisCycle,
-        range: {
-          start: alert.timeWindow.start,
-          end: alert.timeWindow.end
-        }
-      });
+    } else if (
+      !alert.nextFiring ||
+      !moment(alert.nextFiring).isBetween(earliest, latest)
+    ) {
+      // nextFiring isn't set for today yet, and needs a value
+      console.warn('replacing nextFiring', alert.nextFiring);
+      alert.nextFiring = getRandomMoment(earliest, latest).toJSON();
     }
-  },
 
-  handleEvents() {
-    isReady = true;
-    cordova.plugins.notification.local.on('trigger', function(notification) {
-      firedAlerts[notification.id] = moment();
-    });
+    return alert;
   }
 
 };
 
-document.addEventListener('deviceready', Controller.handleEvents);
 
 export default Controller;
