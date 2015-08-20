@@ -71,7 +71,9 @@ export default class AlertEditor extends Component {
             onChange={this.onEndChange.bind(this)}
           />
         </label>
-        <button className='pure-button button-positive' onClick={toggleHandler.bind(this, alert)}>
+        <button
+          className={'pure-button' + (!alert.isEnabled ? ' button-positive' : '')}
+          onClick={toggleHandler.bind(this, alert)}>
           {toggleText}
         </button>
         <button className='pure-button button-negative' onClick={this.onDeleteClick.bind(this)}>Delete</button>

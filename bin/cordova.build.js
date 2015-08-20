@@ -12,6 +12,7 @@ var webpackConfig = require('../webpack.config.js');
 // Remove hot loading things
 webpackConfig.entry = path.resolve(__dirname, '../src/index.cordova.jsx');
 webpackConfig.plugins = [];
+webpackConfig.resolve.extensions = ['', '.cordova.js', '.cordova.jsx', '.js', '.jsx'];
 
 function copyFileAsync(src, dest) {
   console.log('copying: \n\tfrom ' + src + '\n\tto   ' + dest);
@@ -23,7 +24,7 @@ function copyFileAsync(src, dest) {
 
 // Run a web build
 console.log('\nBUILDING WEB PROJECT\n');
-buildAsync(null)
+buildAsync(webpackConfig)
 
   // Copy built files into cordova project
   .then(function() {

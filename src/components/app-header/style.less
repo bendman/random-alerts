@@ -2,8 +2,9 @@
 
 .context-nav {
   position: relative;
-  height: 2.5rem;
-  background: @backAlt;
+  height: 3rem;
+  background: @darkBack;
+  border-bottom: 2px solid darken(@darkBack, 5%);
   z-index: 1;
 
   button {
@@ -15,6 +16,7 @@
     font-size: 2rem;
     margin: 0;
     padding: 0.4rem;
+    color: @interaction;
 
     &.forward-btn {
       float: right;
@@ -36,5 +38,8 @@
     margin: 0.3rem 0 0;
     line-height: 2.5rem;
     text-align: center;
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: @text;
   }
 }

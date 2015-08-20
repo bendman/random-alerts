@@ -1,10 +1,11 @@
 import Immutable from 'immutable';
 import * as ACTIONS from 'app/constants/actionTypes';
-import AlertController from 'app/controllers/alerts';
+import 'app/controllers/alerts';
+import Singletons from 'app/controllers/singletons';
 
 let idIterator = 0;
 const INIT_STATE = (function() {
-  let alerts = AlertController.fetch();
+  let alerts = Singletons.AlertsController.fetch();
   console.info('fetched', alerts);
 
   if (!alerts) {
@@ -17,11 +18,12 @@ const INIT_STATE = (function() {
       },
       isEnabled: true
     }];
-    AlertController.save(alerts);
+    Singletons.AlertsController.save(alerts);
   }
 
   return Immutable.fromJS(alerts);
 }());
+let currentState = INIT_STATE;
 
 let HANDLERS = {};
 HANDLERS[ACTIONS.ADD_ALERT] = function(STATE) {
@@ -89,16 +91,22 @@ export function getNewId() {
   return idIterator;
 }
 
-export default function(STATE = INIT_STATE, ACTION) {
+function updateStore(STATE = currentState, ACTION) {
   let newState = STATE;
 
   if (ACTION && HANDLERS.hasOwnProperty(ACTION.type)) {
     newState = HANDLERS[ACTION.type](STATE, ACTION);
   }
 
-  let updated = AlertController.updateAll(newState.toJS());
-  AlertController.save(updated);
-  console.log('updating alerts', updated);
+  let updated = Singletons.AlertsController.updateAll(newState.toJS(), ACTION);
+  console.log('updating alerts', ACTION, updated);
 
-  return Immutable.fromJS(updated);
+  currentState = Immutable.fromJS(updated);
+  return currentState;
 }
+
+Singletons.Store = {
+  update: updateStore
+};
+
+export default updateStore;

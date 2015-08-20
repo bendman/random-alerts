@@ -1,7 +1,7 @@
 @import (reference) '~app/style.less';
 
-@inputBG: #dfdfdf;
-@inputSize: 2rem;
+@inputBG: @lightBack;
+@inputSize: 2.5rem;
 
 label {
   display: block;
@@ -35,9 +35,11 @@ button {
   margin: auto;
 
   &.button-positive {
-    background: lightgreen;
+    color: #fff;
+    background: @green;
   }
   &.button-negative {
-    background: red;
+    color: #fff;
+    background: @red;
   }
 }

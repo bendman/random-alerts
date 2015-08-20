@@ -34,6 +34,9 @@ module.exports = {
     }, {
       test: /\.less$/,
       loaders: ['style', 'css', 'less']
+    }, {
+      test: /\.(ttf|svg|woff|gif|jpe?g|png)$/,
+      loaders: ['file']
     }]
   }
 };

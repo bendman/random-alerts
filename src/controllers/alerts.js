@@ -1,6 +1,8 @@
 import moment from 'moment';
 import Immutable from 'immutable';
-import Notifications from './notifications';
+import 'app/controllers/notifications';
+import Singletons from 'app/controllers/singletons';
+import * as ACTIONS from 'app/constants/actionTypes';
 
 const TIME_FORMAT = 'HH:mm';
 
@@ -32,37 +34,65 @@ let Controller = {
     localStorage.setItem('alerts', storable);
   },
 
-  remove(id) {
-    Notifications.remove(id);
-  },
-
   // Update all of the arrays to match the current state
-  updateAll(alerts) {
+  updateAll(alerts, ACTION) {
+    if (ACTION.type === ACTIONS.DELETE_ALERT) {
+      Singletons.NotificationsController.remove(ACTION.id);
+    } else if (ACTION.type === ACTIONS.TRIGGER_ALERT) {
+      let triggered = alerts.filter((alert) => alert.id === ACTION.id)[0];
+      if (triggered) {
+        triggered.nextFiring = true;
+      }
+    }
+
     let updatedAlerts = alerts.map(this.update.bind(this));
     console.info('updatedAlerts', updatedAlerts);
+    this.save(updatedAlerts);
     return updatedAlerts;
   },
 
   // Update a single alert to match it's current state
   update(alert) {
-    let earliest = moment(alert.timeWindow.start, TIME_FORMAT);
+    // Get range start time, or "now" if already passed
+    let earliest = moment.max(
+      moment(),
+      moment(alert.timeWindow.start, TIME_FORMAT)
+    );
+    // Get range end time
     let latest = moment(alert.timeWindow.end, TIME_FORMAT);
 
-    // For overnight end times, add a day
+    // For overnight end times or times before now, add a day
     if (latest.isBefore(earliest)) {
       latest.add(1, 'day');
     }
 
     if (!alert.isEnabled) {
-      this.remove(alert.id);
+      // Remove disabled alerts
+      Singletons.NotificationsController.remove(alert.id);
 
-    } else if (
-      !alert.nextFiring ||
-      !moment(alert.nextFiring).isBetween(earliest, latest)
-    ) {
+    } else {
+
       // nextFiring isn't set for today yet, and needs a value
-      console.warn('replacing nextFiring', alert.nextFiring);
-      alert.nextFiring = getRandomMoment(earliest, latest).toJSON();
+      if (
+        !alert.nextFiring || // not yet set
+        alert.nextFiring === true || // already fired today
+        !moment(alert.nextFiring).isBetween(earliest, latest) // needs new time
+      ) {
+        console.warn('replacing nextFiring', alert.nextFiring);
+        let randomMoment = getRandomMoment(earliest, latest);
+        if (alert.nextFiring === true) {
+          randomMoment.add(1, 'day');
+        }
+        alert.nextFiring = randomMoment.toJSON();
+      }
+
+      // update the whole alert (this even updates text if at the same time)
+      Singletons.NotificationsController.set({
+        id: alert.id,
+        title: alert.name,
+        text: alert.name,
+        at: alert.nextFiring
+      });
     }
 
     return alert;
@@ -70,5 +100,6 @@ let Controller = {
 
 };
 
+Singletons.AlertsController = Controller;
 
 export default Controller;

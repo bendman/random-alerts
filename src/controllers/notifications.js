@@ -1,28 +1,31 @@
-let isReady = false;
+import moment from 'moment';
+import Singletons from 'app/controllers/singletons';
+
+function setWithAPI(options) {
+  this.schedule({
+    id: options.id,
+    title: options.title,
+    text: options.text,
+    led: '005A4E',
+    at: moment(options.at).toDate()
+  });
+}
+function removeWithAPI(id) {
+  this.cancel(id);
+}
 
 var Controller = {
 
   remove(id) {
-    if (isReady) {
-      cordova.plugins.notification.local.cancel(id);
-    }
+    // cancel things here
   },
 
   set(options) {
-    if (!isReady) {
-      return false;
-    }
-    cordova.plugins.notification.local.schedule({
-      id: options.id,
-      title: options.title,
-      text: options.text,
-      led: 'ED52B9',
-      at: options.at
-    });
+    // set things here
   },
 
   onReady() {
-    isReady = true;
+    // Reset fired notifications for tomorrow
     cordova.plugins.notification.local.on('trigger', function(notification) {
       console.warn('alerting', notification.id);
     });
@@ -30,6 +33,6 @@ var Controller = {
 
 };
 
-// document.addEventListener('deviceready', Controller.handleEvents);
+Singletons.NotificationsController = Controller;
 
 export default Controller;

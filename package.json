@@ -41,6 +41,7 @@
     "mocha-loader": "^0.7.1",
     "immutable": "^3.7.4",
     "cordova": "^5.1.1",
-    "bluebird": "^2.9.34"
+    "bluebird": "^2.9.34",
+    "file-loader": "^0.8.4"
   }
 }

@@ -11,3 +11,5 @@ export const DISABLE_ALERT = 'disable_alert';
 export const SET_ALERT_START = 'set_alert_start';
 
 export const SET_ALERT_END = 'set_alert_end';
+
+export const TRIGGER_ALERT = 'trigger_alert';

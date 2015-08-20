@@ -50,3 +50,9 @@ export function set_alert_end(id, end) {
      end
   };
 }
+
+export function trigger_alert(id) {
+  return {
+    id
+  };
+}
