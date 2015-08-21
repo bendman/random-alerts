@@ -17,7 +17,7 @@ function setWithAPI(options) {
     id: options.id,
     title: options.title,
     text: options.text,
-    led: '005A4E',
+    led: '322D4C',
     at: moment(options.at).toDate()
   });
 }

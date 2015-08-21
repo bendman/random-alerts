@@ -4,6 +4,7 @@ import { getNewId } from 'app/stores/alerts';
 import * as AlertActions from 'app/actions';
 import AppHeader from 'app/components/app-header';
 import AlertItem from 'app/components/alert-item';
+import './style.less';
 
 @connect(function(state) {
   return { alerts: state.alerts.toJS() };
@@ -25,13 +26,13 @@ export default class AlertList extends Component {
       <div>
         <AppHeader>
           <h2>Alerts</h2>
-          <button onClick={this.onNewClick.bind(this)}
-            className='forward-btn'> + </button>
         </AppHeader>
         <main>
           <ul>
             {alerts}
           </ul>
+          <button onClick={this.onNewClick.bind(this)}
+            className='forward-btn'> + </button>
         </main>
       </div>
     );

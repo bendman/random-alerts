@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'redux/react';
 import * as Actions from 'app/actions';
+import moment from 'moment';
 import './style.less';
 
 @connect(function(state, params) {
@@ -32,14 +33,17 @@ export default class AlertEditor extends Component {
       // toggleHandler = this.onEnable;
     }
 
+    let start = moment(alert.timeWindow.start, 'HH:mm').format('h:mm A');
+    let end = moment(alert.timeWindow.end, 'HH:mm').format('h:mm A');
+
     return (
       <li
         className={`alert-item ${toggleClass}`}
         onClick={this.onChoose.bind(this)}>
         <span
-          className='alert-name'>{alert.name}</span>
+          className='alert-name'>{alert.name || 'Unnamed'}</span>
         <span className='alert-times'>
-          {alert.timeWindow.start} - {alert.timeWindow.end}
+          {start} - {end}
         </span>
       </li>
     );

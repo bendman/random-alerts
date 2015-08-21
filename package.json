@@ -8,7 +8,8 @@
     "start": "node bin/dev.server.js",
     "test": "node bin/test.server.js",
     "test-cli": "mocha --compilers js:babel/register --recursive",
-    "cordova": "node bin/cordova.build.js"
+    "cordova": "node bin/cordova.build.js",
+    "deploy": "npm run cordova && cd cordova && cordova run android --device && cd ../"
   },
   "author": "Ben Duncan <bendman>",
   "license": "ISC",

@@ -44,39 +44,42 @@ export default class AlertEditor extends Component {
           <h2>Edit</h2>
         </AppHeader>
 
-        <label>
-          <span className='input-title'>Message</span>
-          <input
-            type='text'
-            value={alert.name}
-            onChange={this.onNameChange.bind(this)} />
-        </label>
+        <main>
+          <label>
+            <span className='input-title'>Message</span>
+            <input
+              type='text'
+              value={alert.name}
+              onChange={this.onNameChange.bind(this)} />
+          </label>
 
-        <label>
-          <span className='input-title'>Start</span>
-          <input
-            type='time'
-            name='start_time_window'
-            value={startTime}
-            onChange={this.onStartChange.bind(this)}
-          />
-        </label>
+          <label>
+            <span className='input-title'>Start</span>
+            <input
+              type='time'
+              name='start_time_window'
+              value={startTime}
+              onChange={this.onStartChange.bind(this)}
+            />
+          </label>
 
-        <label>
-          <span className='input-title'>End</span>
-          <input
-            type='time'
-            name='end_time_window'
-            value={endTime}
-            onChange={this.onEndChange.bind(this)}
-          />
-        </label>
-        <button
-          className={'pure-button' + (!alert.isEnabled ? ' button-positive' : '')}
-          onClick={toggleHandler.bind(this, alert)}>
-          {toggleText}
-        </button>
-        <button className='pure-button button-negative' onClick={this.onDeleteClick.bind(this)}>Delete</button>
+          <label>
+            <span className='input-title'>End</span>
+            <input
+              type='time'
+              name='end_time_window'
+              value={endTime}
+              onChange={this.onEndChange.bind(this)}
+            />
+          </label>
+          <button
+            className={'pure-button' + (!alert.isEnabled ? ' button-positive' : '')}
+            onClick={toggleHandler.bind(this, alert)}>
+            {toggleText}
+          </button>
+          <button className='pure-button button-negative' onClick={this.onDeleteClick.bind(this)}>Delete</button>
+        </main>
+        
       </div>
     );
 
