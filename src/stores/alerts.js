@@ -58,52 +58,6 @@ HANDLERS[ACTIONS.ADD_ALERT] = function(STATE, ACTION) {
 HANDLERS[ACTIONS.DELETE_ALERT] = function(STATE, ACTION) {
   return STATE.filter(alert => alert.get('id') !== ACTION.id);
 };
-HANDLERS[ACTIONS.NAME_ALERT] = function(STATE, ACTION) {
-  return STATE.map(function(alert) {
-    if (alert.get('id') === ACTION.id) {
-      alert = alert.set('name', ACTION.name);
-    }
-    return alert;
-  });
-};
-HANDLERS[ACTIONS.ENABLE_ALERT] = function(STATE, ACTION) {
-  return STATE.map(function(alert) {
-    if (alert.get('id') === ACTION.id) {
-      alert = alert.set('isEnabled', true);
-    }
-    return alert;
-  });
-};
-HANDLERS[ACTIONS.DISABLE_ALERT] = function(STATE, ACTION) {
-  return STATE.map(function(alert) {
-    if (alert.get('id') === ACTION.id) {
-      alert = alert.set('isEnabled', false);
-    }
-    return alert;
-  });
-};
-HANDLERS[ACTIONS.SET_ALERT_START] = function(STATE, ACTION) {
-  return STATE.map(function(alert) {
-    if (alert.get('id') === ACTION.id) {
-      alert = alert.setIn(
-        [ 'timeWindow', 'start' ],
-        ACTION.start
-      );
-    }
-    return alert;
-  });
-};
-HANDLERS[ACTIONS.SET_ALERT_END] = function(STATE, ACTION) {
-  return STATE.map(function(alert) {
-    if (alert.get('id') === ACTION.id) {
-      alert = alert.setIn(
-        [ 'timeWindow', 'end' ],
-        ACTION.end
-      );
-    }
-    return alert;
-  });
-};
 HANDLERS[ACTIONS.UPDATE_ALERT] = function(STATE, ACTION) {
   return STATE.map(function(alert) {
     if (alert.get('id') === ACTION.alert.id) {

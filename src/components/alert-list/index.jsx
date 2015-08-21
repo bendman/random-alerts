@@ -1,7 +1,5 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'redux/react';
-import { getNewId } from 'app/stores/alerts';
-import * as AlertActions from 'app/actions';
 import AppHeader from 'app/components/app-header';
 import AlertItem from 'app/components/alert-item';
 import './style.less';
