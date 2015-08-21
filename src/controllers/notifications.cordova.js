@@ -43,7 +43,6 @@ var Controller = {
     apiGetter.resolve(cordova.plugins.notification.local);
     // Reset fired notifications for tomorrow
     cordova.plugins.notification.local.on('trigger', function(notification) {
-      console.warn('alerting', notification.id);
       Singletons.Store.update(
         undefined,
         Actions[ACTIONS.TRIGGER_ALERT](notification.id)

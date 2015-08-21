@@ -28,6 +28,7 @@ var Controller = {
     // Reset fired notifications for tomorrow
     cordova.plugins.notification.local.on('trigger', function(notification) {
       console.warn('alerting', notification.id);
+      // TODO: this needs to happen!
     });
   }
 

@@ -3,7 +3,7 @@ import * as ACTIONS from 'app/constants/actionTypes';
 import 'app/controllers/alerts';
 import Singletons from 'app/controllers/singletons';
 
-let idIterator = 0;
+let currentState;
 
 // Use this to make new alerts
 export function newAlert() {
@@ -18,15 +18,24 @@ export function newAlert() {
   };
 }
 
+// Return a new ID, ensuring it's unique
+export function getNewId() {
+  let ids = currentState.map(alert => alert.get('id'));
+  let newId = 0;
+  while (ids.indexOf(newId) !== -1) {
+    newId++;
+  }
+  return newId;
+}
+
 // Set the initial state from local storage or defaults
 const INIT_STATE = (function() {
   let alerts = Singletons.AlertsController.fetch();
-  console.info('fetched', alerts);
 
   if (!alerts) {
     alerts = [{
       name: 'Demo Alert',
-      id: ++idIterator,
+      id: 0,
       timeWindow: {
         start: '08:00',
         end: '21:30'
@@ -38,12 +47,12 @@ const INIT_STATE = (function() {
 
   return Immutable.fromJS(alerts);
 }());
-let currentState = INIT_STATE;
+currentState = INIT_STATE;
 
 let HANDLERS = {};
 HANDLERS[ACTIONS.ADD_ALERT] = function(STATE, ACTION) {
   let createdAlert = ACTION.alert;
-  createdAlert.id = ++idIterator;
+  createdAlert.id = getNewId();
   return STATE.push(Immutable.fromJS(createdAlert));
 };
 HANDLERS[ACTIONS.DELETE_ALERT] = function(STATE, ACTION) {
@@ -104,10 +113,6 @@ HANDLERS[ACTIONS.UPDATE_ALERT] = function(STATE, ACTION) {
   });
 };
 
-export function getNewId() {
-  return idIterator;
-}
-
 function updateStore(STATE = currentState, ACTION) {
   let newState = STATE;
 
@@ -116,7 +121,6 @@ function updateStore(STATE = currentState, ACTION) {
   }
 
   let updated = Singletons.AlertsController.updateAll(newState.toJS(), ACTION);
-  console.log('updating alerts', ACTION, updated);
 
   currentState = Immutable.fromJS(updated);
   return currentState;

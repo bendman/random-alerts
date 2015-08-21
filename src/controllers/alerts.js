@@ -15,7 +15,6 @@ function getRandomMoment(start, end) {
   let offset = parseInt(Math.random() * rangeEnd.diff(start, 'seconds'), 10);
   let target = rangeStart.clone().add(offset, 'seconds');
 
-  console.info('target time', target.format('HH:mm:ss'));
   return target;
 }
 
@@ -46,7 +45,6 @@ let Controller = {
     }
 
     let updatedAlerts = alerts.map(this.update.bind(this));
-    console.info('updatedAlerts', updatedAlerts);
     this.save(updatedAlerts);
     return updatedAlerts;
   },
@@ -78,7 +76,6 @@ let Controller = {
         alert.nextFiring === true || // already fired today
         !moment(alert.nextFiring).isBetween(earliest, latest) // needs new time
       ) {
-        console.warn('replacing nextFiring', alert.nextFiring);
         let randomMoment = getRandomMoment(earliest, latest);
         if (alert.nextFiring === true) {
           randomMoment.add(1, 'day');
