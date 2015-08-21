@@ -39,8 +39,7 @@ export default class AlertList extends Component {
   }
 
   onNewClick() {
-    this.props.dispatch(AlertActions.add_alert());
-    this.context.router.transitionTo(`/alerts/${getNewId()}`);
+    this.context.router.transitionTo('/alerts/new');
   }
 
 }

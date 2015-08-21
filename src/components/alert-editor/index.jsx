@@ -2,13 +2,31 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'redux/react';
 import * as Actions from 'app/actions';
 import AppHeader from 'app/components/app-header';
+import { newAlert as createNewAlert } from 'app/stores/alerts';
+import Immutable from 'immutable';
 import './style.less';
 
 @connect(function(state, component) {
-  let targetId = Number(component.params.alertId);
-  return {
-    alert: state.alerts.toJS().filter(alert => alert.id === targetId)[0]
-  };
+  let props;
+  let alertId = component.params.alertId;
+  if ((typeof alertId === 'string' || typeof alertId === 'number') &&
+    !isNaN(Number(alertId))
+  ) {
+    // Start with an existing alert, by ID
+    props = {
+      isNew: false,
+      alert: state.alerts
+        .filter(alert => alert.get('id') === Number(alertId)).first()
+    };
+  } else {
+    // Create a new alert
+    let newAlert = createNewAlert();
+    props = {
+      isNew: true,
+      alert: Immutable.fromJS(newAlert)
+    };
+  }
+  return props;
 })
 export default class AlertEditor extends Component {
 
@@ -16,12 +34,16 @@ export default class AlertEditor extends Component {
     router: PropTypes.object.isRequired
   }
 
+  state = {
+    alert: this.props.alert
+  }
+
   constructor(props, context) {
     super(props, context);
   }
 
   render() {
-    let alert = this.props.alert;
+    let alert = this.state.alert.toJS();
 
     let startTime = alert.timeWindow.start;
     let endTime = alert.timeWindow.end;
@@ -34,6 +56,16 @@ export default class AlertEditor extends Component {
       toggleText = 'Enable';
       toggleHandler = this.onEnable;
     }
+
+    // Only show delete if the alert isn't new
+    let deleteButton = this.props.isNew ? null : (
+      <button
+        className='pure-button button-negative'
+        onClick={this.onDeleteClick.bind(this)}
+      >
+        Delete
+      </button>
+    );
 
     return (
       <div>
@@ -74,42 +106,69 @@ export default class AlertEditor extends Component {
           </label>
           <button
             className={'pure-button' + (!alert.isEnabled ? ' button-positive' : '')}
-            onClick={toggleHandler.bind(this, alert)}>
+            onClick={toggleHandler.bind(this)}>
             {toggleText}
           </button>
-          <button className='pure-button button-negative' onClick={this.onDeleteClick.bind(this)}>Delete</button>
         </main>
-        
+        <footer>
+          <button
+            className='pure-button button-positive'
+            onClick={this.onSaveClick.bind(this)}
+          >
+            Save
+          </button>
+          {deleteButton}
+        </footer>
+
       </div>
     );
 
   }
 
   onDisable() {
-    this.props.dispatch(Actions.disable_alert(this.props.alert.id));
+    this.setState({
+      alert: this.state.alert.set('isEnabled', false)
+    });
   }
 
   onEnable() {
-    this.props.dispatch(Actions.enable_alert(this.props.alert.id));
+    this.setState({
+      alert: this.state.alert.set('isEnabled', true)
+    });
   }
 
   onNameChange(e) {
-    this.props.dispatch(Actions.name_alert(this.props.alert.id, e.target.value));
-  }
-
-  onDeleteClick() {
-    this.context.router.transitionTo('/alerts');
-    this.props.dispatch(Actions.delete_alert(this.props.alert.id));
+    this.setState({
+      alert: this.state.alert.set('name', e.target.value)
+    });
   }
 
   onStartChange(e) {
     let time = e.target.value;
-    this.props.dispatch(Actions.set_alert_start(this.props.alert.id, time));
+    this.setState({
+      alert: this.state.alert.setIn(['timeWindow', 'start'], time)
+    });
   }
 
   onEndChange(e) {
     let time = e.target.value;
-    this.props.dispatch(Actions.set_alert_end(this.props.alert.id, time));
+    this.setState({
+      alert: this.state.alert.setIn(['timeWindow', 'end'], time)
+    });
+  }
+
+  onSaveClick() {
+    if (this.props.isNew) {
+      this.props.dispatch(Actions.add_alert(this.state.alert.toJS()));
+    } else {
+      this.props.dispatch(Actions.update_alert(this.state.alert.toJS()));
+    }
+    this.context.router.transitionTo('/alerts');
+  }
+
+  onDeleteClick() {
+    this.context.router.transitionTo('/alerts');
+    this.props.dispatch(Actions.delete_alert(this.props.alert.get('id')));
   }
 
   onBackClick() {

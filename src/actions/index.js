@@ -1,8 +1,9 @@
 import * as types from 'app/constants/actionTypes';
 
-export function add_alert() {
+export function add_alert(alert) {
   return {
-     type: types.ADD_ALERT
+     type: types.ADD_ALERT,
+     alert
   };
 }
 
@@ -54,5 +55,12 @@ export function set_alert_end(id, end) {
 export function trigger_alert(id) {
   return {
     id
+  };
+}
+
+export function update_alert(alert) {
+  return {
+    type: types.UPDATE_ALERT,
+    alert
   };
 }
