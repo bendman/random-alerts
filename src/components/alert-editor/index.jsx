@@ -57,16 +57,6 @@ export default class AlertEditor extends Component {
       toggleHandler = this.onEnable;
     }
 
-    // Only show delete if the alert isn't new
-    let deleteButton = this.props.isNew ? null : (
-      <button
-        className='pure-button button-negative'
-        onClick={this.onDeleteClick.bind(this)}
-      >
-        Delete
-      </button>
-    );
-
     return (
       <div>
 
@@ -109,16 +99,21 @@ export default class AlertEditor extends Component {
             onClick={toggleHandler.bind(this)}>
             {toggleText}
           </button>
+          <footer className='pure-g'>
+            <button
+              className='pure-button button-negative pure-u-1-2'
+              onClick={this.onDeleteClick.bind(this)}
+            >
+              {this.props.isNew ? 'Cancel' : 'Delete'}
+            </button>
+            <button
+              className='pure-button button-positive pure-u-1-2'
+              onClick={this.onSaveClick.bind(this)}
+            >
+              Save
+            </button>
+          </footer>
         </main>
-        <footer>
-          <button
-            className='pure-button button-positive'
-            onClick={this.onSaveClick.bind(this)}
-          >
-            Save
-          </button>
-          {deleteButton}
-        </footer>
 
       </div>
     );
