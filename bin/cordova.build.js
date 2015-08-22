@@ -40,12 +40,23 @@ buildAsync(webpackConfig)
   // Copy built files into cordova project
   .then(function(files) {
     console.log('\nCOPYING CONTENT OF BUILT WEB PROJECT\n');
-    return Promise.all(files.map(function(file) {
-      return copyFileAsync(
-        path.join(WEB_SRC_DIR, file),
-        path.join(CORDOVA_SRC_DIR, file)
-      );
-    }));
+    return Promise.all(
+      files.map(function(file) {
+        return copyFileAsync(
+          path.join(WEB_SRC_DIR, file),
+          path.join(CORDOVA_SRC_DIR, file)
+        );
+      }).concat(copyFileAsync(
+        // Add image icon copying to cordova root (for automatic icons)
+        // This is passed to https://github.com/AlexDisler/cordova-icon
+        path.join(WEB_SRC_DIR, 'icon.png'),
+        path.join(CORDOVA_DIR, 'icon.png')
+      )).concat(copyFileAsync(
+        // Images used outside webpack need to be moved into cordova/www/*
+        path.join(WEB_SRC_DIR, 'icon.png'),
+        path.resolve(CORDOVA_SRC_DIR, '../img/icon.png')
+      ))
+    );
   })
 
   // Run cordova build

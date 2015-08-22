@@ -87,7 +87,7 @@
 	    // The scope of 'this' is the event. In order to call the 'receivedEvent'
 	    // function, we must explicitly call 'app.receivedEvent(...);'
 	    onDeviceReady: function onDeviceReady() {
-	        app.receivedEvent('deviceready');
+	        if (this) app.receivedEvent('deviceready');
 	        _appControllersNotifications2['default'].onReady();
 	    },
 	    // Update DOM on a Received Event

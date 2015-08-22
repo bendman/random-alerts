@@ -194,7 +194,6 @@ body {
   position: absolute;
   /* position in the center of the screen */
   left: 50%;
-  top: 50%;
   height: 50px;
   /* text area height */
   width: 225px;
@@ -202,9 +201,13 @@ body {
   text-align: center;
   padding: 180px 0px 0px 0px;
   /* image height is 200px (bottom 20px are overlapped with text) */
-  margin: -115px 0px 0px -112px;
+  margin: 0 0 0 -112px;
   /* offset vertical: half of image height and text area height */
   /* offset horizontal: half of text area width */
+}
+.app img {
+  max-width: 30rem;
+  width: 80%;
 }
 /* Landscape layout (with min-width) */
 @media screen and (min-aspect-ratio: 1/1) and (min-width: 400px) {
@@ -212,14 +215,14 @@ body {
     background-position: left center;
     padding: 75px 0px 75px 170px;
     /* padding-top + padding-bottom + text area = image height */
-    margin: -90px 0px 0px -198px;
+    margin: 0px 0px 0px -198px;
     /* offset vertical: half of image height */
     /* offset horizontal: half of image width and text area width */
   }
 }
 h1 {
-  font-size: 24px;
-  font-weight: normal;
+  font-size: 3rem;
+  font-weight: bold;
   margin: 0px;
   overflow: visible;
   padding: 0px;
