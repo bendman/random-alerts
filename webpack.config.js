@@ -1,5 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   devtool: 'source-map',
@@ -10,11 +11,13 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'dist/build'),
-    filename: 'bundle.js',
-    publicPath: '/static/'
+    filename: '[name].bundle.js',
+    publicPath: '/static/',
+    chunkFilename: '[id].js'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new ExtractTextPlugin('[name].bundle.css')
     // , new webpack.NoErrorsPlugin()
   ],
   resolve: {
@@ -30,10 +33,10 @@ module.exports = {
       include: path.join(__dirname, 'src')
     }, {
       test: /\.css$/,
-      loaders: ['style', 'css']
+      loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
     }, {
       test: /\.less$/,
-      loaders: ['style', 'css', 'less']
+      loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
     }, {
       test: /\.(ttf|svg|woff|gif|jpe?g|png)$/,
       loaders: ['file']
