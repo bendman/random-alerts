@@ -1,9 +1,12 @@
 var webpack = require('webpack');
 var config = require('../webpack.config');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // Remove hot loading things
 config.entry = config.entry.pop();
-config.plugins = [];
+config.plugins = [
+  new ExtractTextPlugin('[name].bundle.css')
+];
 
 // Build the web project
 function build(optConfig, callback) {

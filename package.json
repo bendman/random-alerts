@@ -43,6 +43,7 @@
     "immutable": "^3.7.4",
     "cordova": "^5.1.1",
     "bluebird": "^2.9.34",
-    "file-loader": "^0.8.4"
+    "file-loader": "^0.8.4",
+    "extract-text-webpack-plugin": "^0.8.2"
   }
 }

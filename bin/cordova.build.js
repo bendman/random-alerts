@@ -3,16 +3,21 @@ var execAsync = Promise.promisify(require('child_process').exec);
 var path = require('path');
 var fs = Promise.promisifyAll(require('fs'));
 var buildAsync = Promise.promisify(require('./web.build'));
-
-var BUILD_CMD = 'cordova build';
-var CORDOVA_DIR = path.resolve(__dirname, '../cordova');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // Setup the config
 var webpackConfig = require('../webpack.config.js');
 // Remove hot loading things
 webpackConfig.entry = path.resolve(__dirname, '../src/index.cordova.jsx');
-webpackConfig.plugins = [];
+webpackConfig.plugins = [
+  new ExtractTextPlugin('[name].bundle.css')
+];
 webpackConfig.resolve.extensions = ['', '.cordova.js', '.cordova.jsx', '.js', '.jsx'];
+
+var BUILD_CMD = 'cordova build';
+var WEB_SRC_DIR = path.resolve(__dirname, webpackConfig.output.path);
+var CORDOVA_DIR = path.resolve(__dirname, '../cordova');
+var CORDOVA_SRC_DIR = path.join(CORDOVA_DIR, 'www/js/');
 
 function copyFileAsync(src, dest) {
   console.log('copying: \n\tfrom ' + src + '\n\tto   ' + dest);
@@ -26,19 +31,21 @@ function copyFileAsync(src, dest) {
 console.log('\nBUILDING WEB PROJECT\n');
 buildAsync(webpackConfig)
 
-  // Copy built files into cordova project
+  // Read list of build files from web project
   .then(function() {
+    console.log('\nREADING CONTENT OF BUILT WEB PROJECT\n');
+    return fs.readdirAsync(WEB_SRC_DIR);
+  })
+
+  // Copy built files into cordova project
+  .then(function(files) {
     console.log('\nCOPYING CONTENT OF BUILT WEB PROJECT\n');
-    var mainSource = path.join(
-      webpackConfig.output.path, webpackConfig.output.filename
-    );
-    var mainTarget = path.join(
-      CORDOVA_DIR, 'www/js/', webpackConfig.output.filename
-    );
-    return Promise.all([
-      copyFileAsync(mainSource, mainTarget),
-      copyFileAsync(mainSource + '.map', mainTarget + '.map')
-    ]);
+    return Promise.all(files.map(function(file) {
+      return copyFileAsync(
+        path.join(WEB_SRC_DIR, file),
+        path.join(CORDOVA_SRC_DIR, file)
+      );
+    }));
   })
 
   // Run cordova build
