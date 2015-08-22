@@ -85,7 +85,6 @@
 	    // The scope of 'this' is the event. In order to call the 'receivedEvent'
 	    // function, we must explicitly call 'app.receivedEvent(...);'
 	    onDeviceReady: function onDeviceReady() {
-	        console.log('app ready');
 	        app.receivedEvent('deviceready');
 	        _appControllersNotifications2['default'].onReady();
 	    },
@@ -98,7 +97,6 @@
 	        // listeningElement.setAttribute('style', 'display:none;');
 	        // receivedElement.setAttribute('style', 'display:block;');
 	        //
-	        console.log('Received Event: ' + id);
 	        _react2['default'].render(_react2['default'].createElement(_root2['default'], { history: history }), document.body);
 	    }
 	};
@@ -21965,6 +21963,7 @@
 	Object.defineProperty(exports, '__esModule', {
 	  value: true
 	});
+	exports.newAlert = newAlert;
 	exports.getNewId = getNewId;
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
@@ -21985,15 +21984,43 @@
 	
 	var _appControllersSingletons2 = _interopRequireDefault(_appControllersSingletons);
 	
-	var idIterator = 0;
+	var currentState = undefined;
+	
+	// Use this to make new alerts
+	
+	function newAlert() {
+	  return {
+	    name: 'New Alert',
+	    id: null,
+	    timeWindow: {
+	      start: '09:00',
+	      end: '21:00'
+	    },
+	    isEnabled: true
+	  };
+	}
+	
+	// Return a new ID, ensuring it's unique
+	
+	function getNewId() {
+	  var ids = currentState.map(function (alert) {
+	    return alert.get('id');
+	  });
+	  var newId = 0;
+	  while (ids.indexOf(newId) !== -1) {
+	    newId++;
+	  }
+	  return newId;
+	}
+	
+	// Set the initial state from local storage or defaults
 	var INIT_STATE = (function () {
 	  var alerts = _appControllersSingletons2['default'].AlertsController.fetch();
-	  console.info('fetched', alerts);
 	
 	  if (!alerts) {
 	    alerts = [{
 	      name: 'Demo Alert',
-	      id: ++idIterator,
+	      id: 0,
 	      timeWindow: {
 	        start: '08:00',
 	        end: '21:30'
@@ -22005,69 +22032,27 @@
 	
 	  return _immutable2['default'].fromJS(alerts);
 	})();
-	var currentState = INIT_STATE;
+	currentState = INIT_STATE;
 	
 	var HANDLERS = {};
-	HANDLERS[ACTIONS.ADD_ALERT] = function (STATE) {
-	  return STATE.push(_immutable2['default'].fromJS({
-	    name: 'New Alert',
-	    id: ++idIterator,
-	    timeWindow: {
-	      start: '09:00',
-	      end: '21:00'
-	    },
-	    isEnabled: true
-	  }));
+	HANDLERS[ACTIONS.ADD_ALERT] = function (STATE, ACTION) {
+	  var createdAlert = ACTION.alert;
+	  createdAlert.id = getNewId();
+	  return STATE.push(_immutable2['default'].fromJS(createdAlert));
 	};
 	HANDLERS[ACTIONS.DELETE_ALERT] = function (STATE, ACTION) {
 	  return STATE.filter(function (alert) {
 	    return alert.get('id') !== ACTION.id;
 	  });
 	};
-	HANDLERS[ACTIONS.NAME_ALERT] = function (STATE, ACTION) {
+	HANDLERS[ACTIONS.UPDATE_ALERT] = function (STATE, ACTION) {
 	  return STATE.map(function (alert) {
-	    if (alert.get('id') === ACTION.id) {
-	      alert = alert.set('name', ACTION.name);
+	    if (alert.get('id') === ACTION.alert.id) {
+	      alert = _immutable2['default'].fromJS(ACTION.alert);
 	    }
 	    return alert;
 	  });
 	};
-	HANDLERS[ACTIONS.ENABLE_ALERT] = function (STATE, ACTION) {
-	  return STATE.map(function (alert) {
-	    if (alert.get('id') === ACTION.id) {
-	      alert = alert.set('isEnabled', true);
-	    }
-	    return alert;
-	  });
-	};
-	HANDLERS[ACTIONS.DISABLE_ALERT] = function (STATE, ACTION) {
-	  return STATE.map(function (alert) {
-	    if (alert.get('id') === ACTION.id) {
-	      alert = alert.set('isEnabled', false);
-	    }
-	    return alert;
-	  });
-	};
-	HANDLERS[ACTIONS.SET_ALERT_START] = function (STATE, ACTION) {
-	  return STATE.map(function (alert) {
-	    if (alert.get('id') === ACTION.id) {
-	      alert = alert.setIn(['timeWindow', 'start'], ACTION.start);
-	    }
-	    return alert;
-	  });
-	};
-	HANDLERS[ACTIONS.SET_ALERT_END] = function (STATE, ACTION) {
-	  return STATE.map(function (alert) {
-	    if (alert.get('id') === ACTION.id) {
-	      alert = alert.setIn(['timeWindow', 'end'], ACTION.end);
-	    }
-	    return alert;
-	  });
-	};
-	
-	function getNewId() {
-	  return idIterator;
-	}
 	
 	function updateStore(STATE, ACTION) {
 	  if (STATE === undefined) STATE = currentState;
@@ -22079,7 +22064,6 @@
 	  }
 	
 	  var updated = _appControllersSingletons2['default'].AlertsController.updateAll(newState.toJS(), ACTION);
-	  console.log('updating alerts', ACTION, updated);
 	
 	  currentState = _immutable2['default'].fromJS(updated);
 	  return currentState;
@@ -27042,23 +27026,11 @@
 	var DELETE_ALERT = 'delete_alert';
 	
 	exports.DELETE_ALERT = DELETE_ALERT;
-	var NAME_ALERT = 'name_alert';
-	
-	exports.NAME_ALERT = NAME_ALERT;
-	var ENABLE_ALERT = 'enable_alert';
-	
-	exports.ENABLE_ALERT = ENABLE_ALERT;
-	var DISABLE_ALERT = 'disable_alert';
-	
-	exports.DISABLE_ALERT = DISABLE_ALERT;
-	var SET_ALERT_START = 'set_alert_start';
-	
-	exports.SET_ALERT_START = SET_ALERT_START;
-	var SET_ALERT_END = 'set_alert_end';
-	
-	exports.SET_ALERT_END = SET_ALERT_END;
 	var TRIGGER_ALERT = 'trigger_alert';
+	
 	exports.TRIGGER_ALERT = TRIGGER_ALERT;
+	var UPDATE_ALERT = 'update_alert';
+	exports.UPDATE_ALERT = UPDATE_ALERT;
 	
 	/* REACT HOT LOADER */ }).call(this); if (false) { (function () { module.hot.dispose(function (data) { data.makeHot = module.makeHot; }); if (module.exports && module.makeHot) { var makeExportsHot = require("/Users/bendman/Documents/Development/Experiments/react/random-alerts/node_modules/react-hot-loader/makeExportsHot.js"), foundReactClasses = false; if (makeExportsHot(module, require("react"))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "actionTypes.js" + ": " + err.message); } }); } } })(); }
 
@@ -27107,7 +27079,6 @@
 	  var offset = parseInt(Math.random() * rangeEnd.diff(start, 'seconds'), 10);
 	  var target = rangeStart.clone().add(offset, 'seconds');
 	
-	  console.info('target time', target.format('HH:mm:ss'));
 	  return target;
 	}
 	
@@ -27140,7 +27111,6 @@
 	    }
 	
 	    var updatedAlerts = alerts.map(this.update.bind(this));
-	    console.info('updatedAlerts', updatedAlerts);
 	    this.save(updatedAlerts);
 	    return updatedAlerts;
 	  },
@@ -27167,7 +27137,6 @@
 	      alert.nextFiring === true || // already fired today
 	      !(0, _moment2['default'])(alert.nextFiring).isBetween(earliest, latest) // needs new time
 	      ) {
-	          console.warn('replacing nextFiring', alert.nextFiring);
 	          var randomMoment = getRandomMoment(earliest, latest);
 	          if (alert.nextFiring === true) {
 	            randomMoment.add(1, 'day');
@@ -27241,7 +27210,7 @@
 	    id: options.id,
 	    title: options.title,
 	    text: options.text,
-	    led: '322D4C',
+	    led: '7700DD',
 	    at: (0, _moment2['default'])(options.at).toDate()
 	  });
 	}
@@ -27267,7 +27236,6 @@
 	    apiGetter.resolve(cordova.plugins.notification.local);
 	    // Reset fired notifications for tomorrow
 	    cordova.plugins.notification.local.on('trigger', function (notification) {
-	      console.warn('alerting', notification.id);
 	      _appControllersSingletons2['default'].Store.update(undefined, _appActions2['default'][_appConstantsActionTypes2['default'].TRIGGER_ALERT](notification.id));
 	    });
 	  }
@@ -38771,73 +38739,40 @@
 	});
 	exports.add_alert = add_alert;
 	exports.delete_alert = delete_alert;
-	exports.name_alert = name_alert;
-	exports.enable_alert = enable_alert;
-	exports.disable_alert = disable_alert;
-	exports.set_alert_start = set_alert_start;
-	exports.set_alert_end = set_alert_end;
 	exports.trigger_alert = trigger_alert;
+	exports.update_alert = update_alert;
 	
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
 	
 	var _appConstantsActionTypes = __webpack_require__(178);
 	
-	var types = _interopRequireWildcard(_appConstantsActionTypes);
+	var TYPES = _interopRequireWildcard(_appConstantsActionTypes);
 	
-	function add_alert() {
+	function add_alert(alert) {
 	  return {
-	    type: types.ADD_ALERT
+	    type: TYPES.ADD_ALERT,
+	    alert: alert
 	  };
 	}
 	
 	function delete_alert(id) {
 	  return {
-	    type: types.DELETE_ALERT,
+	    type: TYPES.DELETE_ALERT,
 	    id: id
-	  };
-	}
-	
-	function name_alert(id, name) {
-	  return {
-	    type: types.NAME_ALERT,
-	    id: id,
-	    name: name
-	  };
-	}
-	
-	function enable_alert(id) {
-	  return {
-	    type: types.ENABLE_ALERT,
-	    id: id
-	  };
-	}
-	
-	function disable_alert(id) {
-	  return {
-	    type: types.DISABLE_ALERT,
-	    id: id
-	  };
-	}
-	
-	function set_alert_start(id, start) {
-	  return {
-	    type: types.SET_ALERT_START,
-	    id: id,
-	    start: start
-	  };
-	}
-	
-	function set_alert_end(id, end) {
-	  return {
-	    type: types.SET_ALERT_END,
-	    id: id,
-	    end: end
 	  };
 	}
 	
 	function trigger_alert(id) {
 	  return {
+	    type: TYPES.TRIGGER_ALERT,
 	    id: id
+	  };
+	}
+	
+	function update_alert(alert) {
+	  return {
+	    type: TYPES.UPDATE_ALERT,
+	    alert: alert
 	  };
 	}
 
@@ -41860,7 +41795,7 @@
 	
 	
 	// module
-	exports.push([module.id, "@font-face {\n  font-family: 'Roboto';\n  font-style: normal;\n  font-weight: normal;\n  src: url(" + __webpack_require__(316) + ");\n}\n@font-face {\n  font-family: 'Roboto';\n  font-style: normal;\n  font-weight: lighter;\n  src: url(" + __webpack_require__(317) + ");\n}\n@font-face {\n  font-family: 'Roboto';\n  font-style: normal;\n  font-weight: bold;\n  src: url(" + __webpack_require__(318) + ");\n}\nbody {\n  background: #443869;\n  color: #ddddee;\n  font-family: 'Roboto', sans-serif;\n}\nul,\nol {\n  padding: 0;\n  margin: 0;\n}\n", ""]);
+	exports.push([module.id, "@font-face {\n  font-family: 'Roboto';\n  font-style: normal;\n  font-weight: normal;\n  src: url(" + __webpack_require__(316) + ");\n}\n@font-face {\n  font-family: 'Roboto';\n  font-style: normal;\n  font-weight: lighter;\n  src: url(" + __webpack_require__(317) + ");\n}\n@font-face {\n  font-family: 'Roboto';\n  font-style: normal;\n  font-weight: bold;\n  src: url(" + __webpack_require__(318) + ");\n}\nbody {\n  background: #443869;\n  color: #ddddee;\n  font-family: 'Roboto', sans-serif;\n}\nmain > footer {\n  position: absolute;\n  left: 0.5rem;\n  right: 0.5rem;\n  bottom: 0.5rem;\n}\n.pure-button {\n  height: 3rem;\n}\nul,\nol {\n  padding: 0;\n  margin: 0;\n}\n", ""]);
 	
 	// exports
 
@@ -41899,8 +41834,6 @@
 	
 	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 	
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -41912,12 +41845,6 @@
 	var _react2 = _interopRequireDefault(_react);
 	
 	var _reduxReact = __webpack_require__(286);
-	
-	var _appStoresAlerts = __webpack_require__(176);
-	
-	var _appActions = __webpack_require__(270);
-	
-	var AlertActions = _interopRequireWildcard(_appActions);
 	
 	var _appComponentsAppHeader = __webpack_require__(320);
 	
@@ -41977,8 +41904,7 @@
 	  }, {
 	    key: 'onNewClick',
 	    value: function onNewClick() {
-	      this.props.dispatch(AlertActions.add_alert());
-	      this.context.router.transitionTo('/alerts/' + (0, _appStoresAlerts.getNewId)());
+	      this.context.router.transitionTo('/alerts/new');
 	    }
 	  }], [{
 	    key: 'contextTypes',
@@ -42131,6 +42057,10 @@
 	
 	var Actions = _interopRequireWildcard(_appActions);
 	
+	var _moment = __webpack_require__(181);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
 	__webpack_require__(324);
 	
 	var AlertEditor = (function (_Component) {
@@ -42165,6 +42095,9 @@
 	          // toggleHandler = this.onEnable;
 	        }
 	
+	      var start = (0, _moment2['default'])(alert.timeWindow.start, 'HH:mm').format('h:mm A');
+	      var end = (0, _moment2['default'])(alert.timeWindow.end, 'HH:mm').format('h:mm A');
+	
 	      return _react2['default'].createElement(
 	        'li',
 	        {
@@ -42179,9 +42112,9 @@
 	        _react2['default'].createElement(
 	          'span',
 	          { className: 'alert-times' },
-	          alert.timeWindow.start,
+	          start,
 	          ' - ',
-	          alert.timeWindow.end
+	          end
 	        )
 	      );
 	    }
@@ -42337,6 +42270,12 @@
 	
 	var _appComponentsAppHeader2 = _interopRequireDefault(_appComponentsAppHeader);
 	
+	var _appStoresAlerts = __webpack_require__(176);
+	
+	var _immutable = __webpack_require__(177);
+	
+	var _immutable2 = _interopRequireDefault(_immutable);
+	
 	__webpack_require__(329);
 	
 	var AlertEditor = (function (_Component) {
@@ -42354,12 +42293,15 @@
 	    _classCallCheck(this, _AlertEditor);
 	
 	    _get(Object.getPrototypeOf(_AlertEditor.prototype), 'constructor', this).call(this, props, context);
+	    this.state = {
+	      alert: this.props.alert
+	    };
 	  }
 	
 	  _createClass(AlertEditor, [{
 	    key: 'render',
 	    value: function render() {
-	      var alert = this.props.alert;
+	      var alert = this.state.alert.toJS();
 	
 	      var startTime = alert.timeWindow.start;
 	      var endTime = alert.timeWindow.end;
@@ -42442,13 +42384,28 @@
 	            'button',
 	            {
 	              className: 'pure-button' + (!alert.isEnabled ? ' button-positive' : ''),
-	              onClick: toggleHandler.bind(this, alert) },
+	              onClick: toggleHandler.bind(this) },
 	            toggleText
 	          ),
 	          _react2['default'].createElement(
-	            'button',
-	            { className: 'pure-button button-negative', onClick: this.onDeleteClick.bind(this) },
-	            'Delete'
+	            'footer',
+	            { className: 'pure-g' },
+	            _react2['default'].createElement(
+	              'button',
+	              {
+	                className: 'pure-button button-negative pure-u-1-2',
+	                onClick: this.onDeleteClick.bind(this)
+	              },
+	              this.props.isNew ? 'Cancel' : 'Delete'
+	            ),
+	            _react2['default'].createElement(
+	              'button',
+	              {
+	                className: 'pure-button button-positive pure-u-1-2',
+	                onClick: this.onSaveClick.bind(this)
+	              },
+	              'Save'
+	            )
 	          )
 	        )
 	      );
@@ -42456,35 +42413,55 @@
 	  }, {
 	    key: 'onDisable',
 	    value: function onDisable() {
-	      this.props.dispatch(Actions.disable_alert(this.props.alert.id));
+	      this.setState({
+	        alert: this.state.alert.set('isEnabled', false)
+	      });
 	    }
 	  }, {
 	    key: 'onEnable',
 	    value: function onEnable() {
-	      this.props.dispatch(Actions.enable_alert(this.props.alert.id));
+	      this.setState({
+	        alert: this.state.alert.set('isEnabled', true)
+	      });
 	    }
 	  }, {
 	    key: 'onNameChange',
 	    value: function onNameChange(e) {
-	      this.props.dispatch(Actions.name_alert(this.props.alert.id, e.target.value));
-	    }
-	  }, {
-	    key: 'onDeleteClick',
-	    value: function onDeleteClick() {
-	      this.context.router.transitionTo('/alerts');
-	      this.props.dispatch(Actions.delete_alert(this.props.alert.id));
+	      this.setState({
+	        alert: this.state.alert.set('name', e.target.value)
+	      });
 	    }
 	  }, {
 	    key: 'onStartChange',
 	    value: function onStartChange(e) {
 	      var time = e.target.value;
-	      this.props.dispatch(Actions.set_alert_start(this.props.alert.id, time));
+	      this.setState({
+	        alert: this.state.alert.setIn(['timeWindow', 'start'], time)
+	      });
 	    }
 	  }, {
 	    key: 'onEndChange',
 	    value: function onEndChange(e) {
 	      var time = e.target.value;
-	      this.props.dispatch(Actions.set_alert_end(this.props.alert.id, time));
+	      this.setState({
+	        alert: this.state.alert.setIn(['timeWindow', 'end'], time)
+	      });
+	    }
+	  }, {
+	    key: 'onSaveClick',
+	    value: function onSaveClick() {
+	      if (this.props.isNew) {
+	        this.props.dispatch(Actions.add_alert(this.state.alert.toJS()));
+	      } else {
+	        this.props.dispatch(Actions.update_alert(this.state.alert.toJS()));
+	      }
+	      this.context.router.transitionTo('/alerts');
+	    }
+	  }, {
+	    key: 'onDeleteClick',
+	    value: function onDeleteClick() {
+	      this.context.router.transitionTo('/alerts');
+	      this.props.dispatch(Actions.delete_alert(this.props.alert.get('id')));
 	    }
 	  }, {
 	    key: 'onBackClick',
@@ -42495,12 +42472,25 @@
 	
 	  var _AlertEditor = AlertEditor;
 	  AlertEditor = (0, _reduxReact.connect)(function (state, component) {
-	    var targetId = Number(component.params.alertId);
-	    return {
-	      alert: state.alerts.toJS().filter(function (alert) {
-	        return alert.id === targetId;
-	      })[0]
-	    };
+	    var props = undefined;
+	    var alertId = component.params.alertId;
+	    if ((typeof alertId === 'string' || typeof alertId === 'number') && !isNaN(Number(alertId))) {
+	      // Start with an existing alert, by ID
+	      props = {
+	        isNew: false,
+	        alert: state.alerts.filter(function (alert) {
+	          return alert.get('id') === Number(alertId);
+	        }).first()
+	      };
+	    } else {
+	      // Create a new alert
+	      var newAlert = (0, _appStoresAlerts.newAlert)();
+	      props = {
+	        isNew: true,
+	        alert: _immutable2['default'].fromJS(newAlert)
+	      };
+	    }
+	    return props;
 	  })(AlertEditor) || AlertEditor;
 	  return AlertEditor;
 	})(_react.Component);

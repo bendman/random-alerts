@@ -26,7 +26,7 @@ var app = {
         Notifications.onReady();
     },
     // Update DOM on a Received Event
-    receivedEvent: function(id) {
+    receivedEvent: function() {
         // var parentElement = document.getElementById(id);
         // var listeningElement = parentElement.querySelector('.listening');
         // var receivedElement = parentElement.querySelector('.received');
