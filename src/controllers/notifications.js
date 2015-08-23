@@ -1,3 +1,4 @@
+/*eslint no-unused-vars:0*/
 import moment from 'moment';
 import Singletons from 'app/controllers/singletons';
 
