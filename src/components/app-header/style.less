@@ -7,32 +7,40 @@ main {
 }
 
 .context-nav {
+  .shadowify(@darkBack);
   position: relative;
   height: @height;
-  background: @darkBack;
-  border-bottom: 2px solid darken(@darkBack, 5%);
+  border-bottom: 1px solid darken(@darkBack, 15%);
   z-index: 1;
   position: fixed;
   top: 0;
   right: 0;
   left: 0;
 
+  .logo {
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    background-image: @logo;
+  }
+
   button {
     border: none;
     background: none;
-    line-height: 2.5rem;
-    height: 2.5rem;
-    width: 2.5rem;
-    font-size: 2rem;
+    line-height: 3rem;
+    height: 3rem;
+    font-size: 1rem;
     margin: 0;
-    padding: 0.4rem;
+    padding: 0 1rem 0 0;
     color: @interaction;
 
-    &.forward-btn {
+    &.right-btn {
       float: right;
       text-align: right;
     }
-    &.back-btn {
+    &.left-btn {
       float: left;
       text-align: left;
     }
@@ -44,7 +52,7 @@ main {
     right: 0;
     z-index: -1;
 
-    font-weight: normal;
+    font-weight: 100;
     margin: 0.3rem 0 0;
     line-height: 2.5rem;
     text-align: center;

@@ -5,7 +5,9 @@ import 'app/bootscreen.less';
 
 const history = new History();
 
-React.render(
-  <Root history={history} />,
-  document.body
-);
+setTimeout(() => {
+  React.render(
+    <Root history={history} />,
+    document.body
+  );
+}, 1e3);

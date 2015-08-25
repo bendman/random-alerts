@@ -2,30 +2,50 @@
 
 @inputBG: @lightBack;
 @inputSize: 2.5rem;
+@labelWidth: 5rem;
 
 label {
+  .shadowify(@inputBG, @direction: to top left);
+  position: relative;
   display: block;
   padding: 0 0.5rem;
-  background: @inputBG;
-  margin: 1rem 0.5rem;
+  margin: 1rem 0;
   height: @inputSize;
   line-height: @inputSize;
+  font-size: 1rem;
+  font-weight: 100;
   color: average(@text, @inputBG);
 
+  & > div {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+  }
   .input-title {
     display: inline-block;
-    width: 5rem;
+    width: @labelWidth - 2;
+    padding-right: 2rem;
+    text-align: right;
   }
 
   input[type=text],
   input[type=time] {
-    display: inline-block;
+    display: block;
     height: @inputSize;
-    line-height: inherit;
+    line-height: @inputSize;
     margin: 0 auto;
     background: transparent;
     border: none;
     color: @text;
+    width: 100%;
+    padding: 0 0 0 @labelWidth;
+  }
+
+  ::-webkit-date-and-time-value {
+    line-height: @inputSize;
   }
 }
 button {

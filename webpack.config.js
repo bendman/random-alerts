@@ -12,13 +12,12 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist/build'),
     filename: '[name].bundle.js',
-    publicPath: '/static/',
+    publicPath: '/js/',
     chunkFilename: '[id].js'
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin('[name].bundle.css')
-    // , new webpack.NoErrorsPlugin()
   ],
   resolve: {
     extensions: ['', '.js', '.jsx'],
@@ -33,13 +32,19 @@ module.exports = {
       include: path.join(__dirname, 'src')
     }, {
       test: /\.css$/,
-      loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+      loader: ExtractTextPlugin.extract('style-loader', 'css-loader!cssnext-loader')
     }, {
       test: /\.less$/,
-      loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
+      loader: ExtractTextPlugin.extract('style-loader', 'css-loader!cssnext-loader!less-loader')
     }, {
       test: /\.(ttf|svg|woff|gif|jpe?g|png)$/,
-      loaders: ['file']
+      loader: 'url?limit=10000'
     }]
+  },
+  cssnext: {
+    browsers: [
+      '> 1%',
+      'android > 2'
+    ]
   }
 };

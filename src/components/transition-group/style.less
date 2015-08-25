@@ -4,39 +4,83 @@
   height: 100%;
   perspective: 1200px;
   transform-style: preserve-3d;
+
+  & > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.page-next-appear {
+  transform: translateY(100%);
+  &.page-next-appear-active {
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    transition-timing-function: cubic-bezier(0.455, 0.030, 0.515, 0.955);
+  }
+}
+
+/**
+ * No Transition
+ */
+.page-none-enter {
+  opacity: 1;
+  &.page-none-enter-active {
+    opacity: 0.9;
+    transition: opacity 0.1s;
+  }
+}
+/* Exit to left */
+.page-none-leave {
+  opacity: 0.9;
+  &.page-none-leave-active {
+    opacity: 1;
+    transition: opacity 0.1s;
+  }
 }
 
 
 /**
- * Old Transitions
+ * Slide in from right
  */
-.page-enter {
-
-  opacity: 0.1;
-
-  &.page-enter-active {
-    transition: opacity 1.5s ease-in;
-    opacity: 1;
+.page-next-enter {
+  transform: translateX(100%);
+  &.page-next-enter-active {
+    transform: translateX(0);
+    transition: transform 0.3s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    transition-timing-function: cubic-bezier(0.455, 0.030, 0.515, 0.955);
   }
-
+}
+/* Exit to left */
+.page-next-leave {
+  transform: translateX(0);
+  &.page-next-leave-active {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    transition-timing-function: cubic-bezier(0.455, 0.030, 0.515, 0.955);
+  }
 }
 
-.page-leave {
-
-  opacity: 1;
-
-  &.page-leave-active {
-    transition: opacity 1.5s ease-in;
-    opacity: 0.01;
+/**
+ * Slide in from left
+ */
+.page-back-enter {
+  transform: translateX(-100%);
+  &.page-back-enter-active {
+    transform: translateX(0);
+    transition: transform 0.3s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    transition-timing-function: cubic-bezier(0.455, 0.030, 0.515, 0.955);
   }
-
 }
-
-.page-appear {
-  opacity: 0.1;
-  transition: opacity 1s ease-in;
-
-  &.page-appear-active {
-    opacity: 1;
+/* Exit to right */
+.page-back-leave {
+  transform: translateX(0);
+  &.page-back-leave-active {
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    transition-timing-function: cubic-bezier(0.455, 0.030, 0.515, 0.955);
   }
 }

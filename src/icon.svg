@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 18.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+<g id="Shadow">
+</g>
+<g id="Clock_1_">
+	<path fill="#FFFFFF" d="M257.5,15C123.6,15,15,123.6,15,257.5S123.6,500,257.5,500S500,391.4,500,257.5S391.4,15,257.5,15z
+		 M257.5,467.7c-116.1,0-210.2-94.1-210.2-210.2S141.4,47.3,257.5,47.3s210.2,94.1,210.2,210.2S373.6,467.7,257.5,467.7z"/>
+	<g id="Ticks">
+		<rect x="249.4" y="63.5" fill="#FFFFFF" width="16.2" height="64.7"/>
+		<rect x="62.5" y="36.7" transform="matrix(0.866 -0.5 0.5 0.866 -14.641 38.7564)" display="none" width="5" height="20"/>
+		<rect x="44.2" y="55" transform="matrix(0.5 -0.866 0.866 0.5 -32.9423 72.9423)" display="none" width="5" height="20"/>
+		<rect x="63.5" y="249.4" fill="#FFFFFF" width="64.7" height="16.2"/>
+		<rect x="44.2" y="105" transform="matrix(-0.5 -0.866 0.866 -0.5 -29.5448 212.9423)" display="none" width="5" height="20"/>
+		<rect x="62.5" y="123.3" transform="matrix(-0.866 -0.5 0.5 -0.866 54.641 281.2436)" display="none" width="5" height="20"/>
+		<rect x="249.4" y="386.8" fill="#FFFFFF" width="16.2" height="64.7"/>
+		<rect x="112.5" y="123.3" transform="matrix(-0.866 0.5 -0.5 -0.866 281.2436 191.2435)" display="none" width="5" height="20"/>
+		<rect x="130.8" y="105" transform="matrix(-0.5 0.866 -0.866 -0.5 299.5448 57.0577)" display="none" width="5" height="20"/>
+		<rect x="386.8" y="249.4" fill="#FFFFFF" width="64.7" height="16.2"/>
+		<rect x="130.8" y="55" transform="matrix(0.5 0.866 -0.866 0.5 122.9423 -82.9423)" display="none" width="5" height="20"/>
+		<rect x="112.5" y="36.7" transform="matrix(0.866 0.5 -0.5 0.866 38.7564 -51.2436)" display="none" width="5" height="20"/>
+	</g>
+	<polygon fill="#FFFFFF" points="363.7,176.1 297.5,243.7 196.8,211.3 151.3,338.9 217.5,271.3 318.2,303.7 	"/>
+</g>
+<g id="Meta">
+</g>
+</svg>

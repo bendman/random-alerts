@@ -7,22 +7,41 @@
 @back: #443869;
 @interaction: #60A7DB;
 @text: #dde;
+@logo: url('~app/icon.svg');
+
+.shadowify(@color: @back, @direction: to right bottom) {
+  @lighter: lighten(@color, 3%);
+  @darker: darken(@color, 3%);
+  background: linear-gradient(@direction, @lighter, @darker);
+}
 
 body {
-  background: @back;
   color: @text;
   font-family: 'Roboto', sans-serif;
 }
 
-main > footer {
-  position: absolute;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: 0.5rem;
+.transition-wrapper {
+  .shadowify(@back);
+}
+
+main {
+  padding: 0.5rem 0.5rem 4rem;
+
+  & > footer {
+    position: fixed;
+    left: 0rem;
+    right: 0rem;
+    bottom: 0rem;
+
+    .pure-button {
+      border-radius: 0;
+    }
+  }
 }
 
 .pure-button {
   height: 3rem;
+  font-size: 1rem;
 }
 
 ul, ol {

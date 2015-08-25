@@ -21,16 +21,16 @@ export default class AlertList extends Component {
     });
 
     return (
-      <div>
+      <div key='alert-list'>
         <AppHeader>
           <h2>Alerts</h2>
         </AppHeader>
         <main>
-          <ul>
+          <ul className='list'>
             {alerts}
           </ul>
           <button onClick={this.onNewClick.bind(this)}
-            className='forward-btn'> + </button>
+            className='new-btn'> + </button>
         </main>
       </div>
     );

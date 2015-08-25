@@ -7,6 +7,7 @@ export default class AppHeader extends Component {
 
     return (
       <header className='context-nav'>
+        <div className='logo'></div>
         {this.props.children}
       </header>
     );

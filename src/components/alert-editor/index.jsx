@@ -58,41 +58,46 @@ export default class AlertEditor extends Component {
     }
 
     return (
-      <div>
-
+      <div key={'alert-editor-' + alert.id}>
         <AppHeader>
-          <button onClick={this.onBackClick.bind(this)}
-            className='back-btn'> &lt; </button>
+          {!this.props.isNew && <button onClick={this.onDeleteClick.bind(this)}
+            className='right-btn'>Delete</button>}
           <h2>Edit</h2>
         </AppHeader>
 
         <main>
           <label>
-            <span className='input-title'>Message</span>
-            <input
-              type='text'
-              value={alert.name}
-              onChange={this.onNameChange.bind(this)} />
+            <span className='input-title'>Title</span>
+            <div>
+              <input
+                type='text'
+                value={alert.name}
+                onChange={this.onNameChange.bind(this)} />
+            </div>
           </label>
 
           <label>
             <span className='input-title'>Start</span>
-            <input
-              type='time'
-              name='start_time_window'
-              value={startTime}
-              onChange={this.onStartChange.bind(this)}
-            />
+            <div>
+              <input
+                type='time'
+                name='start_time_window'
+                value={startTime}
+                onChange={this.onStartChange.bind(this)}
+              />
+            </div>
           </label>
 
           <label>
             <span className='input-title'>End</span>
-            <input
-              type='time'
-              name='end_time_window'
-              value={endTime}
-              onChange={this.onEndChange.bind(this)}
-            />
+            <div>
+              <input
+                type='time'
+                name='end_time_window'
+                value={endTime}
+                onChange={this.onEndChange.bind(this)}
+              />
+            </div>
           </label>
           <button
             className={'pure-button' + (!alert.isEnabled ? ' button-positive' : '')}
@@ -102,9 +107,9 @@ export default class AlertEditor extends Component {
           <footer className='pure-g'>
             <button
               className='pure-button button-negative pure-u-1-2'
-              onClick={this.onDeleteClick.bind(this)}
+              onClick={this.onBackClick.bind(this)}
             >
-              {this.props.isNew ? 'Cancel' : 'Delete'}
+              Cancel
             </button>
             <button
               className='pure-button button-positive pure-u-1-2'
@@ -114,7 +119,6 @@ export default class AlertEditor extends Component {
             </button>
           </footer>
         </main>
-
       </div>
     );
 
